@@ -127,13 +127,16 @@ test('Message.toResponse - checking object attributes', 5, function () {
 });
 
 
-test('Message cloning', 2, function () {
+test('Message cloning', 4, function () {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org',
                                   {from: 'bob@example.org'},
                                   'm=audio 49170 RTP/AVP 0 8 97');
   var requestCopy = SIP.createMessage(request);
   var response = request.toResponse(200);
+  
+  deepEqual(request, requestCopy, 'Same internal data');
+  ok(request !== requestCopy, 'Different references to request objects');
 
   requestCopy.body = 'm=audio 37606 RTP/AVP 0 8 97';
   requestCopy.headers.from = 'bob@u1.example.org';
