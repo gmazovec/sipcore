@@ -144,3 +144,26 @@ test('Message cloning', 2, function () {
   equal(request.body, 'm=audio 49170 RTP/AVP 0 8 97', 'Request body not changed');
   equal(request.headers.from, 'bob@example.org', 'Request header not changed');
 });
+
+
+test('Message.get/setHeader - set/get header', 1, function() {
+
+  var request = SIP.createMessage('INVITE', 'alice@example.org');
+
+  request.setHeader('from', 'bob@example.org');
+
+  equal(request.getHeader('from'), 'bob@example.org', 'Set header value');
+});
+
+
+test('Message.header - set/get header with multiple values', 3, function() {
+
+  var request = SIP.createMessage('INVITE', 'alice@example.org');
+
+  request.setHeader('contact', 'bob@example.org');
+  request.setHeader('contact', ['bob@u1.example.org', 'bob@bob.example.org'], true);
+
+  equal(request.getHeader('contact'), 'bob@example.org', 'First header value');
+  equal(request.getHeader('contact', 1), 'bob@u1.example.org', 'Second header value');
+  equal(request.getHeader('contact', 2), 'bob@bob.example.org', 'Last header value');
+});
