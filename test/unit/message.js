@@ -20,6 +20,7 @@
 // load library in non-browser environments
 if (typeof window === 'undefined') {
   var SIP = require('../..');
+  var messageData = require('../data/message');
 }
 
 
@@ -112,17 +113,18 @@ test('SIP.createMessage - checking object attributes', 5, function () {
 });
 
 
-test('Message.toResponse - checking object attributes', 5, function () {
+test('Message.toResponse - checking object attributes', 6, function () {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org',
                                   {from: 'bob@example.org'},
                                   'm=audio 49170 RTP/AVP 0 8 97');
-  var response = request.toResponse(200);
+  var response = request.toResponse(200, 'OK', { subject: 'Urgent call' });
 
   equal(response.status, 200, 'Status code attribute');
   equal(response.reason, 'OK', 'Status reason attribute');
   equal(response.version, '2.0', 'Version attribute');
   equal(request.headers.from, 'bob@example.org', 'From header attribute');
+  equal(request.headers.subject, 'Urgent call', 'Subject header appended to message');
   equal(request.body, 'm=audio 49170 RTP/AVP 0 8 97', 'Body attribute');
 });
 
@@ -149,24 +151,171 @@ test('Message cloning', 4, function () {
 });
 
 
-test('Message.get/setHeader - set/get header', 1, function() {
+test('Message.get/setHeader - set/get header', 2, function() {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
 
   request.setHeader('from', 'bob@example.org');
 
   equal(request.getHeader('from'), 'bob@example.org', 'Set header value');
+
+  request.setHeader('from', null, 0);
+
+  strictEqual(request.getHeader('from'), null, 'Deleted header value');
 });
 
 
-test('Message.header - set/get header with multiple values', 3, function() {
+test('Message.setHeader - set/get header with multiple values', 8, function() {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
 
-  request.setHeader('contact', 'bob@example.org');
-  request.setHeader('contact', ['bob@u1.example.org', 'bob@bob.example.org'], true);
+  request.setHeader('contact', '<sip:bob@example.org>');
+  request.setHeader('contact', ['<sip:bob@u1.example.org>', '<sip:bob@bob.example.org>'], true);
 
-  equal(request.getHeader('contact'), 'bob@example.org', 'First header value');
-  equal(request.getHeader('contact', 1), 'bob@u1.example.org', 'Second header value');
-  equal(request.getHeader('contact', 2), 'bob@bob.example.org', 'Last header value');
+  equal(request.getHeader('contact').length, 3, 'Get all values.');
+
+  equal(request.getHeader('contact', 0), '<sip:bob@example.org>', 'First header value');
+  equal(request.getHeader('contact', 1), '<sip:bob@u1.example.org>', 'Second header value');
+  equal(request.getHeader('contact', 2), '<sip:bob@bob.example.org>', 'Last header value');
+
+  equal(request.getHeader('contact', -3), '<sip:bob@example.org>', 'First header value from reverse order');
+  equal(request.getHeader('contact', -2), '<sip:bob@u1.example.org>', 'Second header value from reverse order');
+  equal(request.getHeader('contact', -1), '<sip:bob@bob.example.org>', 'Last header value from reverse order');
+
+  strictEqual(request.getHeader('contact', -4), null, 'Undefined position is null');
+});
+
+
+test('Message.setHeader - replace values', 3, function() {
+
+  var request = SIP.createMessage('INVITE', 'alice@example.org');
+
+  request.setHeader('contact', '<sip:bob@example.org>');
+  request.setHeader('contact', ['<sip:bob@u1.example.org>', '<sip:bob@bob.example.org>']);
+
+  equal(request.getHeader('contact').length, 2, 'First value replaced with new ones.');
+
+  equal(request.getHeader('contact', 0), '<sip:bob@u1.example.org>', 'First value is valid.');
+  equal(request.getHeader('contact', 1), '<sip:bob@bob.example.org>', 'Second value is valid.');
+});
+
+
+test('Message.setHeader - delete header value', 6, function() {
+
+  var request = SIP.createMessage('INVITE', 'alice@example.org');
+
+  request.setHeader('via', 'SIP/2.0/TCP sip.example.org:5060;branch=b546v4tcwrw');
+  request.setHeader('via', 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', true);
+  request.setHeader('via', 'SIP/2.0/TCP 192.168.1.108:5060;branch=7b6v45345c', true);
+  request.setHeader('via', 'SIP/2.0/TCP 192.168.1.104:5060;branch=nbv45b766v', true);
+
+  equal(request.headers.via.length, 4, 'Via header has 4 values.');
+
+  // delete first value
+  request.setHeader('via', null, 0);
+
+  equal(request.headers.via.length, 3, 'Via header has 3 values.');
+  equal(request.getHeader('via', 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
+
+  // delete last value
+  request.setHeader('via', null, -1);
+
+  equal(request.headers.via.length, 2, 'Via header has 2 values.');
+  equal(request.getHeader('via', 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
+
+  // delete all values
+  request.setHeader('via', null);
+
+  equal(request.getHeader('via'), null, 'Via header has no values.');
+});
+
+
+// Message module
+QUnit.module('Message Parser');
+
+
+test('Message.parse - parsing messages with strict syntax', 12, function () {
+
+  deepEqual(SIP.parse(messageData.raw01_1), messageData.object01_1, 'INVITE message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_2), messageData.object01_2, 'ACK message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_3), messageData.object01_3, 'BYE message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_4), messageData.object01_4, 'CANCEL message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_5), messageData.object01_5, 'REGISTER message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_6), messageData.object01_6, 'OPTIONS message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_7), messageData.object01_7, 'MESSAGE message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_8), messageData.object01_8, 'REFER message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_9), messageData.object01_9, 'NOTIFY message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_10), messageData.object01_10, 'SUBSCRIBE message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_11), messageData.object01_11, 'PRACK message is valid object.');
+  deepEqual(SIP.parse(messageData.raw01_12), messageData.object01_12, 'PUBLISH message is valid object.');
+});
+
+
+test('Message.parse - parsing headers', 5, function () {
+
+  deepEqual(SIP.parse(messageData.raw02), messageData.object02, 'parse 200 OK message with multiline header value.');
+  deepEqual(SIP.parse(messageData.raw03), messageData.object03, 'parse request message with multiple header values.');
+  deepEqual(SIP.parse(messageData.raw04), messageData.object04, 'parse request message with multiple header values in oneline.');
+  deepEqual(SIP.parse(messageData.raw05), messageData.object05, 'parse request message with quoted string in Contact header.');
+  deepEqual(SIP.parse(messageData.raw06), messageData.object06, 'parse response message with tab separator in Via header.');
+});
+
+
+test('Message.parse - invalid values', 14, function () {
+
+  throws(function() {
+    SIP.parse('CALL', 'sip:alice@example.org');
+  }, 'Invalid method name');
+
+  throws(function() {
+    SIP.parse('TRIGGER', 'sip:alice@example.org');
+  }, 'Invalid method name');
+
+  throws(function() {
+    SIP.parse('SIP/2.0 678 Something happened');
+  }, 'Invalid status code');
+
+  throws(function() {
+    SIP.parse('INVITE bob.biloxi.com SIP/2.0');
+  }, 'Invalid SIP uri');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\nCSeq: 1 INVITE\n\n');
+  }, 'Invalid new line character');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\r\nCSeq:   \r\nMax-Forward: 70\r\n\r\n');
+  }, 'Missing header value');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\r\nCSeq 1 INVITE\r\nMax-Forward 70\r\n\r\n');
+  }, 'Missing header separator');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com');
+  }, 'Missing version value');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com SIP');
+  }, 'Missing SIP value');
+
+  throws(function() {
+    SIP.parse('SIP 200 OK');
+  }, 'Missing version value');
+
+  throws(function() {
+    SIP.parse('2.0 200 OK');
+  }, 'Missing SIP value');
+
+  throws(function() {
+    SIP.parse('SI/2.0 200 OK');
+  }, 'Invalid SIP value');
+
+  throws(function() {
+    SIP.parse('S/2.0 200 OK');
+  }, 'Invalid SIP value');
+
+  throws(function() {
+    SIP.parse('S/2.0 200 OK');
+  }, 'Invalid SIP message');
 });
