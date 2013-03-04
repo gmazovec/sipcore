@@ -400,3 +400,41 @@ test('SIP.stringify - transform response message to text', 1, function () {
 
   deepEqual(SIP.stringify(message), messageData.raw08, 'Response message converted to text.');
 });
+
+
+test('SIP.parseUri - parse basic URI address', 2, function () {
+
+  var object = SIP.parse(messageData.raw01_1);
+  var message = SIP.createMessage(object);
+  var fromHeader = message.getHeader('from', true);
+  var ContactHeader = message.getHeader('contact', true, 0);
+
+  deepEqual(SIP.parseUri(fromHeader.uri), messageData.uri01_1_from, 'SIP URI parsed.');
+  deepEqual(SIP.parseUri(ContactHeader.uri, true), messageData.uri01_1_contact, 'SIP URI with parameters parsed.');
+});
+
+
+test('SIP.parseUri - parse full URI address', 1, function () {
+
+  deepEqual(SIP.parseUri(messageData.uri_1, true), messageData.uriObject_1, 'Full SIP URI parsed.');
+});
+
+
+test('SIP.parseUri - parse telphone URI address', 1, function () {
+
+  deepEqual(SIP.parseUri(messageData.uri_2, true), messageData.uriObject_2, 'Telephone SIP URI parsed.');
+});
+
+
+test('SIP.parseUri - emptry uri', 1, function () {
+
+  var uriObject = SIP.parseUri('');
+
+  deepEqual(uriObject, {}, 'Empty URI parsed to empty object.');
+});
+
+
+test('SIP.parseUri - case sensitivity and encoding', 1, function () {
+
+  deepEqual(SIP.parseUri(messageData.uri_3, true), messageData.uriObject_3, 'URL encoded SIP URI parsed.');
+});

@@ -97,6 +97,28 @@ exports.header01_1_to = {
   'params': {}
 };
 
+exports.uri01_1_from = {
+  'scheme': 'sip',
+  'user': 'alice',
+  'password': '',
+  'hostname': 'atlanta.example.com',
+  'port': '',
+  'params': {},
+  'headers': {}
+};
+
+exports.uri01_1_contact = {
+  'scheme': 'sip',
+  'user': 'alice',
+  'password': '',
+  'hostname': 'client.atlanta.example.com',
+  'port': '',
+  'params': {
+    'transport': 'tcp'
+  },
+  'headers': {}
+};
+
 
 // ACK message - strict syntax
 exports.raw01_2 = 'ACK sip:bob@client.biloxi.example.com SIP/2.0\r\n' +
@@ -765,3 +787,56 @@ exports.raw08 = 'SIP/2.0 180 Ringing\r\n' +
   'Contact: <sip:bob@client.biloxi.example.com;transport=tcp>\r\n' +
   'Content-Length: 0\r\n' +
   '\r\n';
+
+
+// SIP URIs
+
+exports.uri_1 = 'sips:alice:secret@atlanta.example.com:5061;transport=tls?Subject=Missed%20call&Priority=urgent';
+
+exports.uriObject_1 = {
+  'scheme': 'sips',
+  'user': 'alice',
+  'password': 'secret',
+  'hostname': 'atlanta.example.com',
+  'port': '5061',
+  'params': {
+    'transport': 'tls'
+  },
+  'headers': {
+    'subject': 'Missed call',
+    'priority': 'urgent'
+  }
+};
+
+
+exports.uri_2 = 'sip:+385-555-1234567;PostD=pp22;isub=1411@foo.com;user=phone';
+
+exports.uriObject_2 = {
+  'scheme': 'sip',
+  'user': '+385-555-1234567',
+  'password': '',
+  'hostname': '',
+  'port': '',
+  'params': {
+    'postd':'pp22',
+    'isub': '1411@foo.com',
+    'user': 'phone'
+  },
+  'headers': {}
+};
+
+
+exports.uri_3 = 'sip:%61LICE:SeCrEt@ATlanTA.com;TransPort=UDP;';
+
+exports.uriObject_3 = {
+  'scheme': 'sip',
+  'user': 'aLICE',
+  'password': 'SeCrEt',
+  'hostname': 'atlanta.com',
+  'port': '',
+  'params': {
+    'transport': 'udp'
+  },
+  'headers': {}
+};
+
