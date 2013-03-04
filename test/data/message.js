@@ -101,7 +101,8 @@ exports.raw01_2 = 'ACK sip:bob@client.biloxi.example.com SIP/2.0\r\n' +
   'To: Bob <sip:bob@biloxi.example.com>;tag=314159\r\n' +
   'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
   'CSeq: 2 ACK\r\n' +
-  'Content-Length: 0';
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_2 = {
   'method': 'ACK',
@@ -130,7 +131,8 @@ exports.raw01_3 = 'BYE sip:alice@client.atlanta.example.com SIP/2.0\r\n' +
   'To: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
   'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
   'CSeq: 1 BYE\r\n' +
-  'Content-Length: 0';
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_3 = {
   'method': 'BYE',
@@ -152,14 +154,15 @@ exports.object01_3 = {
 
 // CANCEL message - strict syntax
 exports.raw01_4 = 'CANCEL sip:bob@biloxi.example.com SIP/2.0\r\n' +
-'Via: SIP/2.0/UDP client.atlanta.example.com:5060;branch=z9hG4bK74bf9\r\n' +
-'Max-Forwards: 70\r\n' +
-'From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
-'To: Bob <sip:bob@biloxi.example.com>\r\n' +
-'Route: <sip:ss1.atlanta.example.com;lr>\r\n' +
-'Call-ID: 2xTb9vxSit55XU7p8@atlanta.example.com\r\n' +
-'CSeq: 1 CANCEL\r\n' +
-'Content-Length: 0';
+  'Via: SIP/2.0/UDP client.atlanta.example.com:5060;branch=z9hG4bK74bf9\r\n' +
+  'Max-Forwards: 70\r\n' +
+  'From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
+  'To: Bob <sip:bob@biloxi.example.com>\r\n' +
+  'Route: <sip:ss1.atlanta.example.com;lr>\r\n' +
+  'Call-ID: 2xTb9vxSit55XU7p8@atlanta.example.com\r\n' +
+  'CSeq: 1 CANCEL\r\n' +
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_4 = {
   'method': 'CANCEL',
@@ -181,14 +184,15 @@ exports.object01_4 = {
 
 // REGISTER message - strict syntax
 exports.raw01_5 = 'REGISTER sips:ss2.biloxi.example.com SIP/2.0\r\n' +
-'Via: SIP/2.0/TLS client.biloxi.example.com:5061;branch=z9hG4bKnashds7\r\n' +
-'Max-Forwards: 70\r\n' +
-'From: Bob <sips:bob@biloxi.example.com>;tag=a73kszlfl\r\n' +
-'To: Bob <sips:bob@biloxi.example.com>\r\n' +
-'Call-ID: 1j9FpLxk3uxtm8tn@biloxi.example.com\r\n' +
-'CSeq: 1 REGISTER\r\n' +
-'Contact: <sips:bob@client.biloxi.example.com>\r\n' +
-'Content-Length: 0';
+  'Via: SIP/2.0/TLS client.biloxi.example.com:5061;branch=z9hG4bKnashds7\r\n' +
+  'Max-Forwards: 70\r\n' +
+  'From: Bob <sips:bob@biloxi.example.com>;tag=a73kszlfl\r\n' +
+  'To: Bob <sips:bob@biloxi.example.com>\r\n' +
+  'Call-ID: 1j9FpLxk3uxtm8tn@biloxi.example.com\r\n' +
+  'CSeq: 1 REGISTER\r\n' +
+  'Contact: <sips:bob@client.biloxi.example.com>\r\n' +
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_5 = {
   'method': 'REGISTER',
@@ -210,15 +214,16 @@ exports.object01_5 = {
 
 // OPTIONS message - strict syntax
 exports.raw01_6 = 'OPTIONS sip:carol@chicago.com SIP/2.0\r\n' +
-'Via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bKhjhs8ass877\r\n' +
-'Max-Forwards: 70\r\n' +
-'To: <sip:carol@chicago.com>\r\n' +
-'From: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n' +
-'Call-ID: a84b4c76e66710\r\n' +
-'CSeq: 63104 OPTIONS\r\n' +
-'Contact: <sip:alice@pc33.atlanta.com>\r\n' +
-'Accept: application/sdp\r\n' +
-'Content-Length: 0';
+  'Via: SIP/2.0/UDP pc33.atlanta.com;branch=z9hG4bKhjhs8ass877\r\n' +
+  'Max-Forwards: 70\r\n' +
+  'To: <sip:carol@chicago.com>\r\n' +
+  'From: Alice <sip:alice@atlanta.com>;tag=1928301774\r\n' +
+  'Call-ID: a84b4c76e66710\r\n' +
+  'CSeq: 63104 OPTIONS\r\n' +
+  'Contact: <sip:alice@pc33.atlanta.com>\r\n' +
+  'Accept: application/sdp\r\n' +
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_6 = {
   'method': 'OPTIONS',
@@ -251,7 +256,8 @@ exports.raw01_7 = 'MESSAGE sip:romeo@example.com SIP/2.0\r\n' +
   'CSeq: 1 MESSAGE\r\n' +
   'Date: Fri, 08 Apr 2011 06:54:00 GMT\r\n' +
   'Content-Type: text/plain\r\n' +
-  'Content-Length: 19';
+  'Content-Length: 19\r\n' +
+  '\r\n';
 
 exports.object01_7 = {
   'method': 'MESSAGE',
@@ -284,7 +290,8 @@ exports.raw01_8 = 'REFER sip:b@atlanta.example.com SIP/2.0\r\n' +
   'Max-Forwards: 70\r\n' +
   'Refer-To: sip b@example.org\r\n' +
   'Contact: sip:a@atlanta.example.com\r\n' +
-  'Content-Length: 0';
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object01_8 = {
   'method': 'REFER',
@@ -356,7 +363,8 @@ exports.raw01_10 = 'SUBSCRIBE sip:gw@subA.example.com SIP/2.0\r\n' +
   'Expires: 7200\r\n' +
   'Accept: application/kpml-response+xml\r\n' +
   'Content-Type: application/kpml-request+xml\r\n' +
-  'Content-Length: 292';
+  'Content-Length: 292\r\n' +
+  '\r\n';
 
 exports.object01_10 = {
   'method': 'SUBSCRIBE',
@@ -441,7 +449,8 @@ exports.raw01_12 = 'PUBLISH sip:presentity@example.com SIP/2.0\r\n' +
   'Expires: 3600\r\n' +
   'Event: presence\r\n' +
   'Content-Type: application/pidf+xml\r\n' +
-  'Content-Length: 346';
+  'Content-Length: 346\r\n' +
+  '\r\n';
 
 exports.object01_12 = {
   'method': 'PUBLISH',
@@ -713,3 +722,40 @@ exports.object06 = {
   },
   body: ''
 };
+
+
+// Request with multiple header values in one header line
+exports.raw07 = 'INVITE sip:bob@client.biloxi.example.com SIP/2.0\r\n' +
+  'Via: SIP/2.0/TCP ss2.biloxi.example.com:5060;branch=z9hG4bK721e4.1\r\n' +
+  ' , SIP/2.0/TCP ss1.atlanta.example.com:5060;branch=z9hG4bK2d4790.1;received=192.0.2.111\r\n' +
+  ' , SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9;received=192.0.2.101\r\n' +
+  'Max-Forwards: 68\r\n' +
+  'Record-Route: <sip:ss2.biloxi.example.com;lr>\r\n' +
+  ' , <sip:ss1.atlanta.example.com;lr>\r\n' +
+  'From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
+  'To: Bob <sip:bob@biloxi.example.com>\r\n' +
+  'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
+  'CSeq: 2 INVITE\r\n' +
+  'Contact: <sip:alice@client.atlanta.example.com;transport=tcp>\r\n' +
+  'Content-Type: application/sdp\r\n' +
+  'Content-Length: 151\r\n' +
+  '\r\n' +
+  'v=0\r\n' +
+  'o=alice 2890844526 2890844526 IN IP4 client.atlanta.example.com\r\n' +
+  's=-\r\n' +
+  'c=IN IP4 192.0.2.101\r\n' +
+  't=0 0\r\n' +
+  'm=audio 49172 RTP/AVP 0\r\n' +
+  'a=rtpmap:0 PCMU/8000';
+
+
+// Response message
+exports.raw08 = 'SIP/2.0 180 Ringing\r\n' +
+  'Via: SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9;received=192.0.2.101\r\n' +
+  'From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
+  'To: Bob <sip:bob@biloxi.example.com>;tag=8321234356\r\n' +
+  'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
+  'CSeq: 1 INVITE\r\n' +
+  'Contact: <sip:bob@client.biloxi.example.com;transport=tcp>\r\n' +
+  'Content-Length: 0\r\n' +
+  '\r\n';

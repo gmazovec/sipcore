@@ -268,7 +268,7 @@ test('Message.getHeader - parsing multiple header values', 1, function () {
 QUnit.module('Message Parser');
 
 
-test('Message.parse - parsing messages with strict syntax', 12, function () {
+test('SIP.parse - parsing messages with strict syntax', 12, function () {
 
   deepEqual(SIP.parse(messageData.raw01_1), messageData.object01_1, 'INVITE message is valid object.');
   deepEqual(SIP.parse(messageData.raw01_2), messageData.object01_2, 'ACK message is valid object.');
@@ -285,7 +285,7 @@ test('Message.parse - parsing messages with strict syntax', 12, function () {
 });
 
 
-test('Message.parse - parsing headers', 5, function () {
+test('SIP.parse - parsing headers', 5, function () {
 
   deepEqual(SIP.parse(messageData.raw02), messageData.object02, 'parse 200 OK message with multiline header value.');
   deepEqual(SIP.parse(messageData.raw03), messageData.object03, 'parse request message with multiple header values.');
@@ -295,7 +295,7 @@ test('Message.parse - parsing headers', 5, function () {
 });
 
 
-test('Message.parse - invalid values', 14, function () {
+test('SIP.parse - invalid values', 14, function () {
 
   throws(function() {
     SIP.parse('CALL', 'sip:alice@example.org');
@@ -352,4 +352,50 @@ test('Message.parse - invalid values', 14, function () {
   throws(function() {
     SIP.parse('S/2.0 200 OK');
   }, 'Invalid SIP message');
+});
+
+
+test('SIP.stringify - transform message object to text', 12, function () {
+
+  var message1 = SIP.parse(messageData.raw01_1);
+  var message2 = SIP.parse(messageData.raw01_2);
+  var message3 = SIP.parse(messageData.raw01_3);
+  var message4 = SIP.parse(messageData.raw01_4);
+  var message5 = SIP.parse(messageData.raw01_5);
+  var message6 = SIP.parse(messageData.raw01_6);
+  var message7 = SIP.parse(messageData.raw01_7);
+  var message8 = SIP.parse(messageData.raw01_8);
+  var message9 = SIP.parse(messageData.raw01_9);
+  var message10 = SIP.parse(messageData.raw01_10);
+  var message11 = SIP.parse(messageData.raw01_11);
+  var message12 = SIP.parse(messageData.raw01_12);
+
+  deepEqual(SIP.stringify(message1), messageData.raw01_1, 'INVITE message converted to text.');
+  deepEqual(SIP.stringify(message2), messageData.raw01_2, 'ACK message converted to text.');
+  deepEqual(SIP.stringify(message3), messageData.raw01_3, 'BYE message converted to text.');
+  deepEqual(SIP.stringify(message4), messageData.raw01_4, 'CANCEL message converted to text.');
+  deepEqual(SIP.stringify(message5), messageData.raw01_5, 'REGISTER message converted to text.');
+  deepEqual(SIP.stringify(message6), messageData.raw01_6, 'OPTIONS message converted to text.');
+  deepEqual(SIP.stringify(message7), messageData.raw01_7, 'MESSAGE message converted to text.');
+  deepEqual(SIP.stringify(message8), messageData.raw01_8, 'REFER message converted to text.');
+  deepEqual(SIP.stringify(message9), messageData.raw01_9, 'NOTIFY message converted to text.');
+  deepEqual(SIP.stringify(message10), messageData.raw01_10, 'SUBSCRIBE message converted to text.');
+  deepEqual(SIP.stringify(message11), messageData.raw01_11, 'PRACK message converted to text.');
+  deepEqual(SIP.stringify(message12), messageData.raw01_12, 'PUBLISH message converted to text.');
+});
+
+
+test('SIP.stringify - transform message object with multiple header values to text', 1, function () {
+
+  var message = SIP.parse(messageData.raw07);
+
+  deepEqual(SIP.stringify(message), messageData.raw07, 'Message converted to text.');
+});
+
+
+test('SIP.stringify - transform response message to text', 1, function () {
+
+  var message = SIP.parse(messageData.raw08);
+
+  deepEqual(SIP.stringify(message), messageData.raw08, 'Response message converted to text.');
 });
