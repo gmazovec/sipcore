@@ -356,7 +356,7 @@ test('SIP.parse - invalid values', 14, function () {
 });
 
 
-test('SIP.stringify - transform message object to text', 12, function () {
+test('SIP.format - transform message object to text', 12, function () {
 
   var message1 = SIP.parse(messageData.raw01_1);
   var message2 = SIP.parse(messageData.raw01_2);
@@ -371,34 +371,34 @@ test('SIP.stringify - transform message object to text', 12, function () {
   var message11 = SIP.parse(messageData.raw01_11);
   var message12 = SIP.parse(messageData.raw01_12);
 
-  deepEqual(SIP.stringify(message1), messageData.raw01_1, 'INVITE message converted to text.');
-  deepEqual(SIP.stringify(message2), messageData.raw01_2, 'ACK message converted to text.');
-  deepEqual(SIP.stringify(message3), messageData.raw01_3, 'BYE message converted to text.');
-  deepEqual(SIP.stringify(message4), messageData.raw01_4, 'CANCEL message converted to text.');
-  deepEqual(SIP.stringify(message5), messageData.raw01_5, 'REGISTER message converted to text.');
-  deepEqual(SIP.stringify(message6), messageData.raw01_6, 'OPTIONS message converted to text.');
-  deepEqual(SIP.stringify(message7), messageData.raw01_7, 'MESSAGE message converted to text.');
-  deepEqual(SIP.stringify(message8), messageData.raw01_8, 'REFER message converted to text.');
-  deepEqual(SIP.stringify(message9), messageData.raw01_9, 'NOTIFY message converted to text.');
-  deepEqual(SIP.stringify(message10), messageData.raw01_10, 'SUBSCRIBE message converted to text.');
-  deepEqual(SIP.stringify(message11), messageData.raw01_11, 'PRACK message converted to text.');
-  deepEqual(SIP.stringify(message12), messageData.raw01_12, 'PUBLISH message converted to text.');
+  deepEqual(SIP.format(message1), messageData.raw01_1, 'INVITE message converted to text.');
+  deepEqual(SIP.format(message2), messageData.raw01_2, 'ACK message converted to text.');
+  deepEqual(SIP.format(message3), messageData.raw01_3, 'BYE message converted to text.');
+  deepEqual(SIP.format(message4), messageData.raw01_4, 'CANCEL message converted to text.');
+  deepEqual(SIP.format(message5), messageData.raw01_5, 'REGISTER message converted to text.');
+  deepEqual(SIP.format(message6), messageData.raw01_6, 'OPTIONS message converted to text.');
+  deepEqual(SIP.format(message7), messageData.raw01_7, 'MESSAGE message converted to text.');
+  deepEqual(SIP.format(message8), messageData.raw01_8, 'REFER message converted to text.');
+  deepEqual(SIP.format(message9), messageData.raw01_9, 'NOTIFY message converted to text.');
+  deepEqual(SIP.format(message10), messageData.raw01_10, 'SUBSCRIBE message converted to text.');
+  deepEqual(SIP.format(message11), messageData.raw01_11, 'PRACK message converted to text.');
+  deepEqual(SIP.format(message12), messageData.raw01_12, 'PUBLISH message converted to text.');
 });
 
 
-test('SIP.stringify - transform message object with multiple header values to text', 1, function () {
+test('SIP.format - transform message object with multiple header values to text', 1, function () {
 
   var message = SIP.parse(messageData.raw07);
 
-  deepEqual(SIP.stringify(message), messageData.raw07, 'Message converted to text.');
+  deepEqual(SIP.format(message), messageData.raw07, 'Message converted to text.');
 });
 
 
-test('SIP.stringify - transform response message to text', 1, function () {
+test('SIP.format - transform response message to text', 1, function () {
 
   var message = SIP.parse(messageData.raw08);
 
-  deepEqual(SIP.stringify(message), messageData.raw08, 'Response message converted to text.');
+  deepEqual(SIP.format(message), messageData.raw08, 'Response message converted to text.');
 });
 
 
