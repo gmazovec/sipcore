@@ -426,7 +426,7 @@ test('SIP.parseUri - parse telphone URI address', 1, function () {
 });
 
 
-test('SIP.parseUri - emptry uri', 1, function () {
+test('SIP.parseUri - empty uri', 1, function () {
 
   var uriObject = SIP.parseUri('');
 
@@ -437,4 +437,24 @@ test('SIP.parseUri - emptry uri', 1, function () {
 test('SIP.parseUri - case sensitivity and encoding', 1, function () {
 
   deepEqual(SIP.parseUri(messageData.uri_3, true), messageData.uriObject_3, 'URL encoded SIP URI parsed.');
+});
+
+
+test('SIP.formatUri - format full URI address', 1, function () {
+
+  deepEqual(SIP.formatUri(messageData.uriObject_1).toLowerCase(), messageData.uri_1.toLowerCase(), 'Full SIP URI formatted.');
+});
+
+
+test('SIP.formatUri - format telphone URI address', 1, function () {
+
+  deepEqual(SIP.formatUri(messageData.uriObject_2).toLowerCase(), messageData.uri_2.toLowerCase(), 'Telephone SIP URI formatted.');
+});
+
+
+test('SIP.formatUri - empty uri object', 1, function () {
+
+  var uri = SIP.formatUri({});
+
+  deepEqual(uri, '', 'Empty URI object formated to empty string.');
 });
