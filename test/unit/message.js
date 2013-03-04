@@ -243,7 +243,7 @@ test('Message.setHeader - delete header value', 6, function() {
 });
 
 
-test('Message.getHeader - parsing header values', 4, function () {
+test('Message.getHeader - parsing header values', 5, function () {
 
   var request = SIP.parse(messageData.raw01_1);
   var message = SIP.createMessage(request);
@@ -252,6 +252,7 @@ test('Message.getHeader - parsing header values', 4, function () {
   deepEqual(message.getHeader('to', true), messageData.header01_1_to, 'To header value parsed.');
   deepEqual(message.getHeader('from', true), messageData.header01_1_from, 'From header value parsed.');
   deepEqual(message.getHeader('contact', true, 0), messageData.header01_1_contact, 'Contact header value parsed.');
+  deepEqual(message.getHeader('cseq', true), messageData.header01_1_cseq, 'CSeq header value parsed.');
 });
 
 

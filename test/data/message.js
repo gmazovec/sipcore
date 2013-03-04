@@ -71,6 +71,12 @@ exports.header01_1_via = {
   }
 };
 
+exports.header01_1_cseq = {
+  'seq': '1',
+  'method': 'INVITE'
+};
+
+
 exports.header01_1_contact = {
   'name': '',
   'uri': 'sip:alice@client.atlanta.example.com;transport=tcp',
