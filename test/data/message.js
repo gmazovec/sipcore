@@ -61,6 +61,36 @@ exports.object01_1 = {
     'a=rtpmap:0 PCMU/8000'
 };
 
+exports.header01_1_via = {
+  'version': '2.0',
+  'protocol': 'TCP',
+  'host': 'client.atlanta.example.com',
+  'port': '5060',
+  'params': {
+    'branch': 'z9hG4bK74bf9'
+  }
+};
+
+exports.header01_1_contact = {
+  'name': '',
+  'uri': 'sip:alice@client.atlanta.example.com;transport=tcp',
+  'params': {}
+};
+
+exports.header01_1_from = {
+  'name': 'Alice',
+  'uri': 'sip:alice@atlanta.example.com',
+  'params': {
+    'tag': '9fxced76sl'
+  }
+};
+
+exports.header01_1_to = {
+  'name': 'Bob',
+  'uri': 'sip:bob@biloxi.example.com',
+  'params': {}
+};
+
 
 // ACK message - strict syntax
 exports.raw01_2 = 'ACK sip:bob@client.biloxi.example.com SIP/2.0\r\n' +
@@ -518,6 +548,38 @@ exports.object03 = {
     'm=audio 49172 RTP/AVP 0\r\n' +
     'a=rtpmap:0 PCMU/8000'
 };
+
+exports.header03_via = [
+  {
+    'version': '2.0',
+    'protocol': 'TCP',
+    'host': 'ss2.biloxi.example.com',
+    'port': '5060',
+    'params': {
+      'branch': 'z9hG4bK721e4.1'
+    }
+  },
+  {
+    'version': '2.0',
+    'protocol': 'TCP',
+    'host': 'ss1.atlanta.example.com',
+    'port': '5060',
+    'params': {
+      'branch': 'z9hG4bK2d4790.1',
+      'received': '192.0.2.111'
+    }
+  },
+  {
+    'version': '2.0',
+    'protocol': 'TCP',
+    'host': 'client.atlanta.example.com',
+    'port': '5060',
+    'params': {
+      'branch': 'z9hG4bK74bf9',
+      'received': '192.0.2.101'
+    }
+  }
+];
 
 
 // Request with multiple header values in one header entry

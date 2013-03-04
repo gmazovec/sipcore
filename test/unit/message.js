@@ -187,15 +187,15 @@ test('Message.setHeader - set/get header with multiple values', 8, function() {
 
   equal(request.getHeader('contact').length, 3, 'Get all values.');
 
-  equal(request.getHeader('contact', 0), '<sip:bob@example.org>', 'First header value');
-  equal(request.getHeader('contact', 1), '<sip:bob@u1.example.org>', 'Second header value');
-  equal(request.getHeader('contact', 2), '<sip:bob@bob.example.org>', 'Last header value');
+  equal(request.getHeader('contact', false, 0), '<sip:bob@example.org>', 'First header value');
+  equal(request.getHeader('contact', false, 1), '<sip:bob@u1.example.org>', 'Second header value');
+  equal(request.getHeader('contact', false, 2), '<sip:bob@bob.example.org>', 'Last header value');
 
-  equal(request.getHeader('contact', -3), '<sip:bob@example.org>', 'First header value from reverse order');
-  equal(request.getHeader('contact', -2), '<sip:bob@u1.example.org>', 'Second header value from reverse order');
-  equal(request.getHeader('contact', -1), '<sip:bob@bob.example.org>', 'Last header value from reverse order');
+  equal(request.getHeader('contact', false, -3), '<sip:bob@example.org>', 'First header value from reverse order');
+  equal(request.getHeader('contact', false, -2), '<sip:bob@u1.example.org>', 'Second header value from reverse order');
+  equal(request.getHeader('contact', false, -1), '<sip:bob@bob.example.org>', 'Last header value from reverse order');
 
-  strictEqual(request.getHeader('contact', -4), null, 'Undefined position is null');
+  strictEqual(request.getHeader('contact', false, -4), null, 'Undefined position is null');
 });
 
 
@@ -208,8 +208,8 @@ test('Message.setHeader - replace values', 3, function() {
 
   equal(request.getHeader('contact').length, 2, 'First value replaced with new ones.');
 
-  equal(request.getHeader('contact', 0), '<sip:bob@u1.example.org>', 'First value is valid.');
-  equal(request.getHeader('contact', 1), '<sip:bob@bob.example.org>', 'Second value is valid.');
+  equal(request.getHeader('contact', false, 0), '<sip:bob@u1.example.org>', 'First value is valid.');
+  equal(request.getHeader('contact', false, 1), '<sip:bob@bob.example.org>', 'Second value is valid.');
 });
 
 
@@ -228,18 +228,39 @@ test('Message.setHeader - delete header value', 6, function() {
   request.setHeader('via', null, 0);
 
   equal(request.headers.via.length, 3, 'Via header has 3 values.');
-  equal(request.getHeader('via', 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
+  equal(request.getHeader('via', false, 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
 
   // delete last value
   request.setHeader('via', null, -1);
 
   equal(request.headers.via.length, 2, 'Via header has 2 values.');
-  equal(request.getHeader('via', 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
+  equal(request.getHeader('via', false, 0), 'SIP/2.0/TCP 192.168.1.102:5060;branch=n7bv34c5r', 'Second value move to first position.');
 
   // delete all values
   request.setHeader('via', null);
 
   equal(request.getHeader('via'), null, 'Via header has no values.');
+});
+
+
+test('Message.getHeader - parsing header values', 4, function () {
+
+  var request = SIP.parse(messageData.raw01_1);
+  var message = SIP.createMessage(request);
+
+  deepEqual(message.getHeader('via', true, 0), messageData.header01_1_via, 'Via header value parsed.');
+  deepEqual(message.getHeader('to', true), messageData.header01_1_to, 'To header value parsed.');
+  deepEqual(message.getHeader('from', true), messageData.header01_1_from, 'From header value parsed.');
+  deepEqual(message.getHeader('contact', true, 0), messageData.header01_1_contact, 'Contact header value parsed.');
+});
+
+
+test('Message.getHeader - parsing multiple header values', 1, function () {
+
+  var request = SIP.parse(messageData.raw03);
+  var message = SIP.createMessage(request);
+
+  deepEqual(message.getHeader('via', true), messageData.header03_via, 'Via header values parsed.');
 });
 
 
