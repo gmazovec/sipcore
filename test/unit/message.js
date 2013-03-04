@@ -71,6 +71,19 @@ test('SIP.createMessage - success calls', 3, function () {
 });
 
 
+test('SIP.createMessage - create message from object', 5, function () {
+
+  var request = SIP.parse(messageData.raw01_5);
+  var message = SIP.createMessage(request);
+
+  deepEqual(message.method, request.method, 'Method is equal.');
+  deepEqual(message.version, request.version, 'Version is equal.');
+  deepEqual(message.uri, request.uri, 'URI is equal.');
+  deepEqual(message.headers, request.headers, 'Headers are equal.');
+  deepEqual(message.body, request.body, 'Body is equal.');
+});
+
+
 test('SIP.createMessage - error calls', 5, function () {
   
   // missing 2nd argument
