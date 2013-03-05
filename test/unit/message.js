@@ -243,6 +243,41 @@ test('Message.setHeader - delete header value', 6, function() {
 });
 
 
+test('Message.getHeader - get compact header names', 10, function () {
+
+  var request = SIP.parse(messageData.raw09);
+  var message = SIP.createMessage(request);
+
+  equal(message.getHeader('via'), messageData.object09.headers.via, 'Compact header Via found.');
+  equal(message.getHeader('from'), messageData.object09.headers.from, 'Compact header From found.');
+  equal(message.getHeader('to'), messageData.object09.headers.to, 'Compact header To found.');
+  equal(message.getHeader('call-id'), messageData.object09.headers['call-id'], 'Compact header Call-ID found.');
+  equal(message.getHeader('contact'), messageData.object09.headers.contact, 'Compact header Contact found.');
+  equal(message.getHeader('content-type'), messageData.object09.headers['content-type'], 'Compact header Content-Type found.');
+  equal(message.getHeader('content-encoding'), messageData.object09.headers['content-encoding'], 'Compact header Content-Encoding found.');
+  equal(message.getHeader('content-length'), messageData.object09.headers['content-length'], 'Compact header Content-Length found.');
+  equal(message.getHeader('subject'), messageData.object09.headers.subject, 'Compact header Subject found.');
+  equal(message.getHeader('supported'), messageData.object09.headers.supported, 'Compact header Supported found.');
+});
+
+
+test('Message.setHeader - set compact header names', 4, function () {
+
+  var request = SIP.parse(messageData.raw09);
+  var message = SIP.createMessage(request);
+
+  message.setHeader('f', 'Bob <sip:bob@biloxi.example.com>;tag=bg6454gb4');
+  message.setHeader('t', 'Alice <sip:alice@atlanta.example.com>');
+  message.setHeader('i', '12345678');
+  message.setHeader('m', 'Bob <sip:bob@u1.biloxi.example.com>');
+
+  equal(message.getHeader('from'), 'Bob <sip:bob@biloxi.example.com>;tag=bg6454gb4', 'Compact header From set.');
+  equal(message.getHeader('to'), 'Alice <sip:alice@atlanta.example.com>', 'Compact header To set.');
+  equal(message.getHeader('call-id'), '12345678', 'Compact header Call-ID set.');
+  equal(message.getHeader('contact', false, 0), 'Bob <sip:bob@u1.biloxi.example.com>', 'Compact header Contact set.');
+});
+
+
 test('Message.getHeader - parsing header values', 5, function () {
 
   var request = SIP.parse(messageData.raw01_1);

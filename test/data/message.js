@@ -789,6 +789,43 @@ exports.raw08 = 'SIP/2.0 180 Ringing\r\n' +
   '\r\n';
 
 
+// INVITE message - compact form
+exports.raw09 = 'INVITE sip:bob@biloxi.example.com SIP/2.0\r\n' +
+  'v: SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9\r\n' +
+  'Max-Forwards: 70\r\n' +
+  'f: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl\r\n' +
+  't: Bob <sip:bob@biloxi.example.com>\r\n' +
+  'i: 3848276298220188511@atlanta.example.com\r\n' +
+  'k: INVITE, CANCEL, BYE, ACK\r\n' +
+  's: Call\r\n' +
+  'CSeq: 1 INVITE\r\n' +
+  'm: <sip:alice@client.atlanta.example.com;transport=tcp>\r\n' +
+  'e: gzip\r\n' +
+  'c: application/sdp\r\n' +
+  'l: 0\r\n' +
+  '\r\n';
+
+exports.object09 = {
+  'method': 'INVITE',
+  'uri': 'sip:bob@biloxi.example.com',
+  'version': '2.0',
+  'headers': {
+    'via': 'SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9',
+    'max-forwards': '70',
+    'from': 'Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl',
+    'to': 'Bob <sip:bob@biloxi.example.com>',
+    'call-id': '3848276298220188511@atlanta.example.com',
+    'supported': 'INVITE, CANCEL, BYE, ACK',
+    'subject': 'Call',
+    'cseq': '1 INVITE',
+    'contact': '<sip:alice@client.atlanta.example.com;transport=tcp>',
+    'content-encoding': 'gzip',
+    'content-type': 'application/sdp',
+    'content-length': '0'
+  }
+};
+
+
 // SIP URIs
 
 exports.uri_1 = 'sips:alice:secret@atlanta.example.com:5061;transport=tls?Subject=Missed%20call&Priority=urgent';
@@ -839,4 +876,3 @@ exports.uriObject_3 = {
   },
   'headers': {}
 };
-
