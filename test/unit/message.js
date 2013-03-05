@@ -35,15 +35,13 @@ test('API functions', 2, function () {
 });
 
 
-test('SIP.isMessage - success calls', 3, function () {
+test('SIP.isMessage - success calls', 2, function () {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
   var requestCopy = SIP.createMessage(request);
-  var response = request.toResponse(200);
 
   ok(SIP.isMessage(request), 'Request is instance of Message');
   ok(SIP.isMessage(requestCopy), 'Copy of request is instance of Message');
-  ok(SIP.isMessage(response), 'Response is instance of Message');
 });
 
 
@@ -126,38 +124,18 @@ test('SIP.createMessage - checking object attributes', 5, function () {
 });
 
 
-test('Message.toResponse - checking object attributes', 6, function () {
-
-  var request = SIP.createMessage('INVITE', 'alice@example.org',
-                                  {from: 'bob@example.org'},
-                                  'm=audio 49170 RTP/AVP 0 8 97');
-  var response = request.toResponse(200, 'OK', { subject: 'Urgent call' });
-
-  equal(response.status, 200, 'Status code attribute');
-  equal(response.reason, 'OK', 'Status reason attribute');
-  equal(response.version, '2.0', 'Version attribute');
-  equal(request.headers.from, 'bob@example.org', 'From header attribute');
-  equal(request.headers.subject, 'Urgent call', 'Subject header appended to message');
-  equal(request.body, 'm=audio 49170 RTP/AVP 0 8 97', 'Body attribute');
-});
-
-
 test('Message cloning', 4, function () {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org',
                                   {from: 'bob@example.org'},
                                   'm=audio 49170 RTP/AVP 0 8 97');
   var requestCopy = SIP.createMessage(request);
-  var response = request.toResponse(200);
   
   deepEqual(request, requestCopy, 'Same internal data');
   ok(request !== requestCopy, 'Different references to request objects');
 
   requestCopy.body = 'm=audio 37606 RTP/AVP 0 8 97';
   requestCopy.headers.from = 'bob@u1.example.org';
-
-  response.body = 'm=audio 52801 RTP/AVP 0 8 97';
-  response.headers.from = 'bob@bob.example.org';
 
   equal(request.body, 'm=audio 49170 RTP/AVP 0 8 97', 'Request body not changed');
   equal(request.headers.from, 'bob@example.org', 'Request header not changed');
