@@ -52,20 +52,38 @@ test('SIP.isMessage - false calls', 2, function () {
 });
 
 
-test('SIP.createMessage - success calls', 3, function () {
+test('SIP.createMessage - success calls', 13, function () {
   
-  throws(!function() {
-    SIP.createMessage('BYE', 'alice@example.org');
-  }, 'Calling with 2 arguments');
+  var message;
 
-  throws(!function() {
-    SIP.createMessage('CANCEL', 'alice@example.org', {from: 'bob@example.org'});
-  }, 'Calling with 3 arguments');
+  message = SIP.createMessage('BYE', 'alice@example.org');
 
-  throws(!function() {
-    SIP.createMessage('INVITE', 'alice@example.org', {from: 'bob@example.org'},
-      'm=audio 49170 RTP/AVP 0 8 97');
-  }, 'Calling with 4 arguments');
+  equal(message.method, 'BYE', 'Request method is valid');
+  equal(message.uri, 'alice@example.org', 'Request URI is valid');
+
+  message = SIP.createMessage('CANCEL', 'alice@example.org', {from: 'bob@example.org'});
+
+  equal(message.method, 'CANCEL', 'Request method is valid');
+  equal(message.uri, 'alice@example.org', 'Request URI is valid');
+  equal(message.headers.from, 'bob@example.org', 'From header value is valid');
+
+  message = SIP.createMessage('200');
+
+  equal(message.status, 200, 'Response status code is valid');
+  equal(message.reason, 'OK', 'Response reason text is valid');
+
+  message = SIP.createMessage('200', 'Okay');
+
+  equal(message.status, 200, 'Response status code is valid');
+  equal(message.reason, 'Okay', 'Response reason text is valid');
+
+  message = SIP.createMessage('INVITE', 'alice@example.org', {from: 'bob@example.org'},
+    'm=audio 49170 RTP/AVP 0 8 97');
+
+  equal(message.method, 'INVITE', 'Request method is valid');
+  equal(message.uri, 'alice@example.org', 'Request URI is valid');
+  equal(message.headers.from, 'bob@example.org', 'From header value is valid');
+  equal(message.body, 'm=audio 49170 RTP/AVP 0 8 97', 'Message body is valid');
 });
 
 
@@ -397,7 +415,7 @@ test('SIP.parse - parse empty header', 1, function () {
 });
 
 
-test('SIP.parse - invalid values', 12, function () {
+test('SIP.parse - invalid values', 13, function () {
 
   throws(function() {
     SIP.parse('CALL', 'sip:alice@example.org');
@@ -440,8 +458,12 @@ test('SIP.parse - invalid values', 12, function () {
   }, 'Missing SIP version in response message');
 
   throws(function() {
+    SIP.parse('Sip/2.0 200 OK');
+  }, 'Invalid SIP value in response message');
+
+  throws(function() {
     SIP.parse('2.0 200 OK');
-  }, 'Missing SIP value in response message');
+  }, 'Invalid SIP value in response message');
 
   throws(function() {
     SIP.parse('SI/2.0 200 OK');
