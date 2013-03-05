@@ -213,6 +213,58 @@ test('Message.setHeader - replace values', 3, function() {
 });
 
 
+test('Message.setHeader - replace first value', 1, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.com');
+
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct');
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.102', 0);
+
+  equal(message.getHeader('via', false, 0), 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.102',
+    'New Via header value set.');
+});
+
+
+test('Message.setHeader - replace last value', 2, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.com');
+
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct');
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.102', -1);
+
+  equal(message.headers.via.length, 1, 'Only 1 Via header value set.');
+  equal(message.getHeader('via', false, -1), 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.102',
+    'Last Via header value replaced.');
+});
+
+
+test('Message.setHeader - replace value', 2, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.com');
+
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct');
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.102', true);
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.108', -5);
+
+  equal(message.headers.via.length, 2, 'Two Via header values set.');
+  equal(message.getHeader('via', false, 0), 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct;received=192.168.1.108',
+    'Forst Via header value replaced.');
+});
+
+
+test('Message.setHeader - prepend value', 2, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.com');
+
+  message.setHeader('via', 'SIP/2.0/TCP alice.example.com:5060;branch=b64v5terct');
+  message.setHeader('via', 'SIP/2.0/TCP p1.example.com:5060;branch=h5hb45ytr', false);
+
+  equal(message.headers.via.length, 2, 'Two Via header values set.');
+  equal(message.getHeader('via', false, 0), 'SIP/2.0/TCP p1.example.com:5060;branch=h5hb45ytr',
+    'Via header value prepended.');
+});
+
+
 test('Message.setHeader - delete header value', 6, function() {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
