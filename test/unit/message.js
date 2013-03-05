@@ -330,6 +330,18 @@ test('Message.setHeader - set compact header names', 4, function () {
 });
 
 
+test('Message.getHeader - get header value using compact name', 4, function () {
+
+  var request = SIP.parse(messageData.raw01_1);
+  var message = SIP.createMessage(request);
+
+  equal(message.getHeader('f'), messageData.object01_1.headers.from, 'Valid From header value.');
+  equal(message.getHeader('t'), messageData.object01_1.headers.to, 'Valid To header value.');
+  equal(message.getHeader('m', false , 0), messageData.object01_1.headers.contact, 'Valid Contact header value.');
+  equal(message.getHeader('i'), messageData.object01_1.headers['call-id'], 'Valid Call-ID header value.');
+});
+
+
 test('Message.get/setHeader - case insensitivity of header names', 4, function () {
 
   var message = SIP.createMessage('INVITE', 'sip:alice@atlanta.example.com');
