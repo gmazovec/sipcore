@@ -509,7 +509,8 @@ exports.raw02 = 'SIP/2.0 180 Ringing\r\n' +
   'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
   'CSeq: 1 INVITE\r\n' +
   'Contact: <sip:bob@client.biloxi.example.com;transport=tcp>\r\n' +
-  'Content-Length: 0';
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object02 = {
   'status': '180',
@@ -733,7 +734,8 @@ exports.raw06 = 'SIP/2.0 180 Ringing\r\n' +
   'Call-ID: 3848276298220188511@atlanta.example.com\r\n' +
   'CSeq: 1 INVITE\r\n' +
   'Contact: <sip:bob@client.biloxi.example.com;transport=tcp>\r\n' +
-  'Content-Length: 0';
+  'Content-Length: 0\r\n' +
+  '\r\n';
 
 exports.object06 = {
   'status': '180',

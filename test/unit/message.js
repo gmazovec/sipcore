@@ -389,7 +389,15 @@ test('SIP.parse - parsing headers', 5, function () {
 });
 
 
-test('SIP.parse - invalid values', 14, function () {
+test('SIP.parse - parse empty header', 1, function () {
+
+  var message = SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\r\nCSeq: \r\nMax-Forward: 70\r\n\r\n');
+
+  strictEqual(message.headers.cseq, undefined, 'CSeq header not defined');
+});
+
+
+test('SIP.parse - invalid values', 12, function () {
 
   throws(function() {
     SIP.parse('CALL', 'sip:alice@example.org');
@@ -412,40 +420,32 @@ test('SIP.parse - invalid values', 14, function () {
   }, 'Invalid new line character');
 
   throws(function() {
-    SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\r\nCSeq:   \r\nMax-Forward: 70\r\n\r\n');
-  }, 'Missing header value');
-
-  throws(function() {
     SIP.parse('INVITE sip:bob.biloxi.com SIP/2.0\r\nCSeq 1 INVITE\r\nMax-Forward 70\r\n\r\n');
   }, 'Missing header separator');
 
   throws(function() {
     SIP.parse('INVITE sip:bob.biloxi.com');
-  }, 'Missing version value');
+  }, 'Missing SIP version in request message');
 
   throws(function() {
     SIP.parse('INVITE sip:bob.biloxi.com SIP');
-  }, 'Missing SIP value');
+  }, 'Missing SIP version in request message');
+
+  throws(function() {
+    SIP.parse('INVITE sip:bob.biloxi.com SIP/');
+  }, 'Missing SIP version in request message');
 
   throws(function() {
     SIP.parse('SIP 200 OK');
-  }, 'Missing version value');
+  }, 'Missing SIP version in response message');
 
   throws(function() {
     SIP.parse('2.0 200 OK');
-  }, 'Missing SIP value');
+  }, 'Missing SIP value in response message');
 
   throws(function() {
     SIP.parse('SI/2.0 200 OK');
-  }, 'Invalid SIP value');
-
-  throws(function() {
-    SIP.parse('S/2.0 200 OK');
-  }, 'Invalid SIP value');
-
-  throws(function() {
-    SIP.parse('S/2.0 200 OK');
-  }, 'Invalid SIP message');
+  }, 'Invalid SIP value in response message');
 });
 
 
