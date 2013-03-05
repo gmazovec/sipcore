@@ -453,6 +453,14 @@ test('SIP.format - transform response message to text', 1, function () {
 });
 
 
+test('SIP.format - compact header names', 1, function () {
+
+  var message = SIP.parse(messageData.raw09);
+  
+  deepEqual(SIP.format(message, true), messageData.raw09, 'Message converted to text with compact header names.');
+});
+
+
 test('SIP.parseUri - parse basic URI address', 2, function () {
 
   var object = SIP.parse(messageData.raw01_1);
