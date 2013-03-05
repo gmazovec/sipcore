@@ -278,6 +278,22 @@ test('Message.setHeader - set compact header names', 4, function () {
 });
 
 
+test('Message.get/setHeader - case insensitivity of header names', 4, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@atlanta.example.com');
+
+  message.setHeader('FROM', 'Bob <sip:bob@biloxi.example.com>;tag=bg6454gb4');
+  message.setHeader('To', 'Alice <sip:alice@atlanta.example.com>');
+  message.setHeader('Call-id', '12345678');
+  message.setHeader('ConTact', 'Bob <sip:bob@u1.biloxi.example.com>');
+
+  equal(message.getHeader('from'), 'Bob <sip:bob@biloxi.example.com>;tag=bg6454gb4', 'Compact header From set.');
+  equal(message.getHeader('to'), 'Alice <sip:alice@atlanta.example.com>', 'Compact header To set.');
+  equal(message.getHeader('call-id'), '12345678', 'Compact header Call-ID set.');
+  equal(message.getHeader('contact', false, 0), 'Bob <sip:bob@u1.biloxi.example.com>', 'Compact header Contact set.');
+});
+
+
 test('Message.getHeader - parsing header values', 5, function () {
 
   var request = SIP.parse(messageData.raw01_1);
