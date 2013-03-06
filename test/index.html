@@ -42,7 +42,7 @@ QUnit.config.urlConfig.push({
 var runCodeCoverage = location.search.indexOf('cov=true') > 0;
 var runMinified = !runCodeCoverage && location.search.indexOf('min=true') > 0; 
 var libPath = runCodeCoverage ? '../lib-cov' : '../lib';
-var libSrc = runMinified ? libPath + '/sip.min.js' : libPath + '/sip.js';
+var libSrc = runMinified ? '../build/sip.min.js' : libPath + '/sip.js';
 
 require([libSrc], function() {
   QUnit.start();
