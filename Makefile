@@ -11,7 +11,7 @@ min: build lib/sip.js
 doc: lib/sip.js
 	mkdir -p doc-src
 	sed -r ':a; s%(.*)/\*.*\*/\n%\1%; ta; /\/\*/ !b; N; ba' lib/sip.js > doc-src/sip.js
-	docco -o doc doc-src/*
+	docco -l classic -o doc doc-src/*
 	cat skin.css >> doc/docco.css
 
 
