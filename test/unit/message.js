@@ -17,11 +17,8 @@
 */
 
 
-// load library in non-browser environments
-if (typeof window === 'undefined') {
-  var SIP = require('../..');
-  var messageData = require('../data/message');
-}
+var SIP = require('../../lib/sip');
+var messageData = require('../data/message');
 
 
 // Message module
