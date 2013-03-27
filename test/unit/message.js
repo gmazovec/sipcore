@@ -335,6 +335,23 @@ test('Message.getHeader - get header value using compact name', 4, function () {
 });
 
 
+test('Message.get/setHeader - get changed multi value header', 1, function () {
+
+  var request = SIP.parse(messageData.raw01_1);
+  var message = SIP.createMessage(request);
+
+  var via = message.getHeader('via', true, 0);
+  var viaRaw = message.getHeader('via', false, 0);
+  
+  viaRaw += ';ttl=10';
+  message.setHeader('via', viaRaw, 0);
+
+  var viaChanged = message.getHeader('via', true, 0);
+
+  equal(via.params.branch, viaChanged.params.branch, 'Via header changed without errors.');
+});
+
+
 test('Message.get/setHeader - case insensitivity of header names', 4, function () {
 
   var message = SIP.createMessage('INVITE', 'sip:alice@atlanta.example.com');
