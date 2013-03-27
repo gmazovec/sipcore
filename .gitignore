@@ -1,4 +1,5 @@
 build
 doc
+lib/sip.min.js
 node_modules
 *.swp
