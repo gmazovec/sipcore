@@ -412,6 +412,38 @@ test('SIP.parse - parse empty header', 1, function () {
 });
 
 
+test('SIP.parse - parsign empty parameter', 3, function () {
+
+  var message = SIP.parse('REGISTER sip:192.168.1.102 SIP/2.0\r\n' +
+    'Via: SIP/2.0/UDP 192.168.1.102:5060;branch=z9hG4bK3403a0c0-8495-e211;rport;ttl=10\r\n' +
+    '\r\n');
+
+  var msg = SIP.createMessage(message);
+  var via = msg.getHeader('via', true, 0);
+
+  equal(via.params.branch, 'z9hG4bK3403a0c0-8495-e211', 'Valid branch parameter in Via header.');
+  equal(via.params.rport, '', 'Valid empty rport parameter in Via header.');
+  equal(via.params.ttl, '10', 'Valid ttl parameter in Via header.');
+
+});
+
+
+test('SIP.parse - parsign empty parameter at the end of header', 3, function () {
+
+  var message = SIP.parse('REGISTER sip:192.168.1.102 SIP/2.0\r\n' +
+    'Via: SIP/2.0/UDP 192.168.1.102:5060;branch=z9hG4bK3403a0c0-8495-e211;ttl=10;rport\r\n' +
+    '\r\n');
+
+  var msg = SIP.createMessage(message);
+  var via = msg.getHeader('via', true, 0);
+
+  equal(via.params.branch, 'z9hG4bK3403a0c0-8495-e211', 'Valid branch parameter in Via header.');
+  equal(via.params.rport, '', 'Valid empty rport parameter in Via header.');
+  equal(via.params.ttl, '10', 'Valid ttl parameter in Via header.');
+
+});
+
+
 test('SIP.parse - invalid values', 13, function () {
 
   throws(function() {
