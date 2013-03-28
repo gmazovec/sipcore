@@ -461,6 +461,18 @@ test('SIP.parse - parsign empty parameter at the end of header', 3, function () 
 });
 
 
+test('Message.getHeader - missing protocol value in Via header', 1, function () {
+
+  var msg = SIP.createMessage('INVITE', 'sip:alice@example.org', {
+    via: 'SIP/2.0 alice.example.org:5060;received=192.168.1.2'
+  });
+
+  var via = msg.getHeader('via', true, 0);
+
+  equal(via, null, 'Invalid Via header.');
+});
+
+
 test('SIP.parse - invalid values', 13, function () {
 
   throws(function() {
