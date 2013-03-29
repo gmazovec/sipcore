@@ -157,6 +157,90 @@ test('Message cloning', 4, function () {
 });
 
 
+test('Message.toResponse - check arguments', 2, function () {
+
+  var message = SIP.createMessage(100, 'Trying');
+
+  throws(function () {
+    message.toResponse(200);
+  }, 'Invalid message type passed to function.');
+
+  throws(function () {
+    message.toResponse(699);
+  }, 'Invalid status code passed to function.');
+});
+
+
+test('Message.toRequest - check arguments', 2, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.org');
+
+  throws(function () {
+    message.toRequest('BYE', 'sip:bob@example.org');
+  }, 'Invalid message type passed to function.');
+
+  message = SIP.createMessage(200, 'OK');
+
+  throws(function () {
+    message.toRequest('ACK', 'alice@example.org');
+  }, 'Invalid URI passed to function.');
+});
+
+
+test('Message.toResponse - check new message', 5, function () {
+
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.org', {
+    'contact': '<sip:alice@example.org>'
+  });
+
+  var response = message.toResponse('200');
+
+  ok(!response.method, 'Method not set in response message.');
+  ok(!response.uri, 'URI not set in response message.');
+  ok(response.status, 'Status code set in response message.');
+  ok(response.reason, 'Reason set in response message.');
+  ok(response.getHeader('contact', true, 0), 'Contact header set in response message.');
+});
+
+
+test('Message.toRequest - check new message', 5, function () {
+
+  var message = SIP.createMessage(200, 'OK', {
+    'contact': '<sip:bob@example.org>'
+  });
+
+  var request = message.toRequest('ACK', 'sip:alice@example.org');
+
+  ok(request.method, 'Method set in request message.');
+  ok(request.uri, 'URI set in request message.');
+  ok(!request.status, 'Status code not set in request message.');
+  ok(!request.reason, 'Reason not set in request message.');
+  ok(request.getHeader('contact', true, 0), 'Contact header set in request message.');
+});
+
+
+test('Message.copy - check deep copy', 3, function () {
+
+  var message = SIP.createMessage('BYE', 'sip:bob@example.org');
+  var message1 = SIP.createMessage(message);
+  var message2 = message.copy();
+
+  ok(message !== message1, 'Copy message is not same object as original.');
+  ok(message !== message2, 'Copy message #2 is not same object as original.');
+  ok(message1 !== message2, 'Copy message #1 and #2 are not the same object.');
+});
+
+
+test('Message.format - check result of SIP.format', 1, function () {
+
+  var message = SIP.createMessage('BYE', 'sip:bob@example.org');
+  var data1 = SIP.format(message);
+  var data2 = message.format();
+
+  equal(data1, data2 , 'SIP.format and Message.format functions return equal result.');
+});
+
+
 test('Message.get/setHeader - set/get header', 2, function() {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
