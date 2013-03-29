@@ -258,7 +258,21 @@ test('Message.setHeader - prepend value', 2, function () {
 });
 
 
-test('Message.setHeader - delete header value', 6, function() {
+test('Message.setHeader - delete header', 2, function () {
+
+  var request = SIP.createMessage('INVITE', 'alice@example.org');
+
+  request.setHeader('max-forwards', 70);
+
+  equal(request.getHeader('max-forwards'), 70, 'Max-Forwards header set.');
+
+  request.setHeader('max-forwards', null);
+
+  equal(request.getHeader('max-forwards'), null, 'Max-Forwards header value deleted.');
+});
+
+
+test('Message.setHeader - delete header with multiple value', 6, function() {
 
   var request = SIP.createMessage('INVITE', 'alice@example.org');
 
