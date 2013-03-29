@@ -19,7 +19,7 @@
 
 var SIP = require('../../lib/sip');
 
-var protocolName = 'heap';
+var protocolName = process.env.SIP_PROTOCOL || 'heap';
 var portNumber = 5060;
 
 

@@ -33,6 +33,7 @@ var runMinified = !runCodeCoverage && location.search.indexOf('min=true') > 0;
 var libPath = runCodeCoverage ? '../lib-cov' : '../lib';
 var libSrc = runMinified ? libPath + '/sip.min' : libPath + '/sip';
 
+process.env.JS_ENV = 'browser';
 
 // define library under original path
 if (runCodeCoverage || runMinified) {
