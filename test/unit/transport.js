@@ -274,7 +274,7 @@ asyncTest('Transport.send - send/receive request', 4, function () {
 
     equal(msg.uri, message.uri, 'Message received.');
     ok(via.params.branch, 'Branch parameter inserted by transport.');
-    ok(via.params.rport, 'RPort parameter inserted by transport.');
+    equal(via.params.rport, '', 'RPort parameter inserted by transport.');
 
     transport.close(function () {
       start();
