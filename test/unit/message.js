@@ -488,6 +488,54 @@ test('Message.getHeader - parsing multiple header values', 1, function () {
 });
 
 
+test('Message.setHeader - set with object values', 3, function () {
+
+  var contactString = 'Alice <sip:alice@pc33.example.org:5066>;transport=udp';
+  var cseqString = '3632 INVITE';
+  var viaString = 'SIP/2.0/UDP pc33.example.org:5060;branch=85h46g5463;received=192.168.1.84;rport';
+
+  var msg = SIP.createMessage('INVITE', 'sip:alice@example.org', {
+    'contact': contactString,
+    'cseq': cseqString,
+    'via': viaString
+  });
+
+  var contact = msg.getHeader('contact', true, 0);
+  var cseq = msg.getHeader('cseq', true);
+  var via = msg.getHeader('via', true, 0);
+
+  msg.setHeader('contact', contact, 0);
+  msg.setHeader('cseq', cseq);
+  msg.setHeader('via', via, 0);
+
+  equal(msg.getHeader('contact', false, 0), contactString, 'Contact header value converted to string.');
+  equal(msg.getHeader('cseq', false), cseqString, 'CSeq header value converted to string.');
+  equal(msg.getHeader('via', false, 0), viaString, 'Via header value converted to string.');
+
+});
+
+
+test('Message.setHeader - set with array of object values', 2, function () {
+
+  var viaString1 = 'SIP/2.0/UDP pc33.example.org:5060;branch=85h46g5463';
+  var viaString2 = 'SIP/2.0/UDP sip.example.org:5060;branch=6g45v646vx3;received=192.168.1.84';
+
+  var msg = SIP.createMessage('INVITE', 'sip:alice@example.org', {
+    'via': [ viaString1, viaString2 ]
+  });
+
+  var via1 = msg.getHeader('via', true, 0);
+  var via2 = msg.getHeader('via', true, 1);
+
+  msg.setHeader('via', via1, 0);
+  msg.setHeader('via', via2, 1);
+
+  equal(msg.getHeader('via', false, 0), viaString1, 'Via header value converted to string.');
+  equal(msg.getHeader('via', false, 1), viaString2, 'Via header value converted to string.');
+
+});
+
+
 // Message module
 QUnit.module('Message Parser');
 
