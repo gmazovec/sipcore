@@ -9,6 +9,7 @@ General purpose SIP library for JavaScript.
     SIP.parse (text)
     SIP.parseUri (text)
     SIP.formatUri (uri)
+    SIP.isMessage (obj)
 
     SIP.createMessage (obj)
     Message.getHeader (name, parse, pos)
