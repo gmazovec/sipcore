@@ -45,8 +45,8 @@ if (runCodeCoverage || runMinified) {
         .replace('/lib-cov/', '/lib/')
         .replace('.min', '');
 
-  cache[fixedPath] = cache[pathname];
-  delete cache[pathname];
+  require.cache[fixedPath] = require.cache[pathname];
+  delete require.cache[pathname];
 
 }
 
