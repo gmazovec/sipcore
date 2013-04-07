@@ -1,7 +1,7 @@
 {
   "name": "sipcore",
   "description": "General purpose SIP library for JavaScript.",
-  "version": "0.1.0pre",
+  "version": "0.1.0",
   "author": "Gregor Mazovec <gregor.mazovec@gmail.com>",
   "license": "LGPL3",
   "main" : "./lib/sip.js",
@@ -15,5 +15,9 @@
   "engines": {
     "node": "0.8.x"
   },
-  "private": true
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmazovec/sipcore.js.git"
+  },
 }
