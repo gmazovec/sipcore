@@ -3,6 +3,10 @@ sipcore.js
 
 General purpose SIP library for JavaScript.
 
+## Installation
+
+    npm install sipcore
+
 ## API
 
     SIP.format (msg, compact)
