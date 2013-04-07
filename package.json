@@ -15,9 +15,8 @@
   "engines": {
     "node": "0.8.x"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/gmazovec/sipcore.js.git"
-  },
+  }
 }
