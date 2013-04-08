@@ -46,7 +46,7 @@ General purpose SIP library for JavaScript.
     });
 
     transport.on('message', function (msg) {
-      console.log('-- new SIP message);
+      console.log('-- new SIP message');
       console.log(msg.format());
     });
 
