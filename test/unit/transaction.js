@@ -17,6 +17,18 @@
 */
 
 
-require('./unit/message');
-require('./unit/transport');
-require('./unit/transaction');
+var SIP = require('../../lib/sip');
+
+
+// Message module
+QUnit.module('Transaction');
+
+
+test('API functions', 2, function () {
+
+  var transport = SIP.createTransport();
+  var transaction = SIP.createTransaction(transport);
+
+  ok(SIP.createTransaction, 'Function createTransaction is defined');
+  ok(transaction.send, 'Function Transaction.send is defined');
+});

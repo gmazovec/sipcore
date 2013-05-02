@@ -26,6 +26,9 @@ test-message:
 test-transport:
 	qunit -c lib/sip.js -t test/unit/transport.js
 
+test-transaction:
+	qunit -c lib/sip.js -t test/unit/transaction.js
+
 test-min: min
 	qunit -c build/sip.min.js -t test/index.js
 
@@ -34,6 +37,9 @@ test-min-message: min
 
 test-min-transport: min
 	qunit -c build/sip.min.js -t test/unit/transport.js
+
+test-min-transaction: min
+	qunit -c build/sip.min.js -t test/unit/transaction.js
 
 
 clean: clean-lib clean-doc
