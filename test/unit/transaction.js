@@ -553,3 +553,140 @@ asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, fu
   });
 
 });
+
+
+// Transaction timeouts
+QUnit.module('Transaction timeouts');
+
+
+asyncTest('Client transaction - invite timeout B', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      equal(trC.state, 1, 'Transaction state set to calling.');
+    });
+    
+    trC.once('timeout', function () {
+
+      equal(trC.state, 6, 'Transaction state set to terminated.');
+      start();
+    });
+
+  });
+
+});
+
+
+asyncTest('Client transaction - non-invite timeout F', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      equal(trC.state, 2, 'Transaction state set to trying.');
+    });
+    
+    trC.once('timeout', function () {
+
+      equal(trC.state, 6, 'Transaction state set to terminated.');
+      start();
+    });
+
+  });
+
+});
+
+
+asyncTest('Client transaction - non-invite timeout F in proceeding state', 3, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+
+      equal(trC.state, 2, 'Transaction state set to trying.');
+      transport.pushHeapMessage(msg.toResponse(100));
+    });
+
+    trC.once('message', function (msgR) {
+      equal(trC.state, 3, 'Transaction state set to proceeding.');
+    })
+    
+    trC.once('timeout', function () {
+
+      equal(trC.state, 6, 'Transaction state set to terminated.');
+      start();
+    });
+
+  });
+
+});
+
+
+asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      equal(trS.state, 3, 'Transaction state set to proceeding.');
+
+      trS.once('state', function (state) {
+
+        equal(trS.state, 4, 'Transaction state set to completed.');
+
+        trS.once('timeout', function (state) {
+
+          equal(trS.state, 6, 'Transaction state set to terminated.');
+          start();
+        });
+      });
+
+      
+      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+
+      setTimeout(function () {
+        trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+      });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
+
+
