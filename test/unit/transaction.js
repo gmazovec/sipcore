@@ -406,6 +406,28 @@ asyncTest('Client transaction - invite state machine, INVITE/100/180/200', 4, fu
 });
 
 
+asyncTest('Client transaction - transport error', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+
+      ok(err, 'Error occured.');
+      equal(trC.state, 6, 'Transaction state set to calling.');
+
+      start();
+    });
+  });
+
+});
+
+
 asyncTest('Server transaction - invite state machine, INVITE/200', 2, function () {
 
   var port = portNumber++;
