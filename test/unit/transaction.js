@@ -25,22 +25,7 @@ var portNumber = 5160;
 
 
 // helpers
-function createClientInviteMessage (port) {
-
-  var msg = SIP.createMessage('INVITE', 'sip:alice@'+ host, {
-    'max-forwards': '70',
-    'from': '<sip:bob@example.org>;tag=654b7-'+ new Date().getTime(),
-    'to': '<sip:alice@example.org>',
-    'call-id': new Date().getTime() + '',
-    'contact': '<sip:bob@'+ host + ':' + port + '>;transport=udp',
-    'cseq': '1 INVITE'
-  });
-
-  return msg;
-}
-
-
-function createServerInviteMessage (port) {
+function createInviteMessage (port) {
 
   var msg = SIP.createMessage('INVITE', 'sip:alice@'+ host, {
     'via': 'SIP/2.0/UDP 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
@@ -56,22 +41,7 @@ function createServerInviteMessage (port) {
 }
 
 
-function createClientRegisterMessage (port) {
-
-  var msg = SIP.createMessage('REGISTER', 'sip:'+ host, {
-    'max-forwards': '70',
-    'from': '<sip:bob@example.org>;tag=654b7-'+ new Date().getTime(),
-    'to': '<sip:bob@example.org>',
-    'call-id': new Date().getTime() + '',
-    'contact': '<sip:bob@'+ host + ':' + port + '>;transport=udp',
-    'cseq': '1 REGISTER'
-  });
-
-  return msg;
-}
-
-
-function createServerRegisterMessage (port) {
+function createRegisterMessage (port) {
 
   var msg = SIP.createMessage('REGISTER', 'sip:'+ host, {
     'via': 'SIP/2.0/UDP 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
@@ -129,7 +99,7 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, func
 
   transport.listen(function (listenState) {
 
-    var msg = createClientRegisterMessage();
+    var msg = createRegisterMessage();
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -164,7 +134,7 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/100/403', 4, 
 
   transport.listen(function (listenState) {
 
-    var msg = createClientRegisterMessage();
+    var msg = createRegisterMessage();
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -207,7 +177,7 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/200', 3, func
 
   transport.listen(function (listenState) {
 
-    var msg = createServerRegisterMessage(port);
+    var msg = createRegisterMessage(port);
 
     transport.once('message', function (msg) {
 
@@ -246,7 +216,7 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/100/403', 4, 
 
   transport.listen(function (listenState) {
 
-    var msg = createServerRegisterMessage(port);
+    var msg = createRegisterMessage(port);
 
     transport.once('message', function (msg) {
 
@@ -292,7 +262,7 @@ asyncTest('Client transaction - invite state machine, INVITE/200', 2, function (
 
   transport.listen(function (listenState) {
 
-    var msg = createClientInviteMessage(port);
+    var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -322,7 +292,7 @@ asyncTest('Client transaction - invite state machine, INVITE/404', 3, function (
 
   transport.listen(function (listenState) {
 
-    var msg = createClientInviteMessage(port);
+    var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -357,7 +327,7 @@ asyncTest('Client transaction - invite state machine, INVITE/100/404', 4, functi
 
   transport.listen(function (listenState) {
 
-    var msg = createClientInviteMessage(port);
+    var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -399,7 +369,7 @@ asyncTest('Client transaction - invite state machine, INVITE/100/180/200', 4, fu
 
   transport.listen(function (listenState) {
 
-    var msg = createClientInviteMessage(port);
+    var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, 'heap', function (err) {
@@ -445,7 +415,7 @@ asyncTest('Server transaction - invite state machine, INVITE/200', 2, function (
 
   transport.listen(function (listenState) {
 
-    var msg = createServerInviteMessage(port);
+    var msg = createInviteMessage(port);
 
     transport.once('message', function (msg) {
 
@@ -479,7 +449,7 @@ asyncTest('Server transaction - invite state machine, INVITE/100/404', 4, functi
 
   transport.listen(function (listenState) {
 
-    var msg = createServerInviteMessage(port);
+    var msg = createInviteMessage(port);
 
     transport.once('message', function (msg) {
 
@@ -528,7 +498,7 @@ asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, fu
 
   transport.listen(function (listenState) {
 
-    var msg = createServerInviteMessage(port);
+    var msg = createInviteMessage(port);
 
     transport.once('message', function (msg) {
 
