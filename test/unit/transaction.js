@@ -628,6 +628,49 @@ asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, fu
 });
 
 
+asyncTest('Server transaction - sent 100 response', 3, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  setAsReliable(transport);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      equal(trS.state, 3, 'Transaction state set to proceeding.');
+
+      transport.once('send', function (msgR) {
+        
+        equal(msgR.status, 100, '100 Trying response sent by transaction layer.');
+
+        trS.once('state', function (state) {
+
+          if (state == 6) {
+            equal(trS.state, 6, 'Transaction state set to terminated.');
+            start();
+          }
+        });
+
+        trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
+      });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
+
+
 // Transaction timeouts
 QUnit.module('Transaction timeouts');
 
