@@ -241,7 +241,7 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/100/403', 4, 
 
       trS.once('state', function (state) {
 
-        equal(trS.state, 3, 'Transaction state set to completed.');
+        equal(trS.state, 3, 'Transaction state set to proceeding.');
 
         trS.once('state', function (state) {
 
@@ -661,6 +661,135 @@ asyncTest('Server transaction - sent 100 response', 3, function () {
 
         trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
       });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
+
+
+asyncTest('Server transaction - invite, response retransmission', 4, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      transport.once('send', function (msgR) {
+        
+        equal(msgR.status, 100, '100 Trying response sent by transaction layer.');
+
+        transport.once('send', function (msgR) {
+
+          equal(msgR.status, 100, '100 Trying retransmission sent.');
+
+
+          trS.once('state', function (state) {
+
+            transport.once('send', function (msgR) {
+              equal(msgR.status, 404, '404 Not Found retransmission sent.');
+
+              transport.pushHeapMessage(msgR.toRequest('ACK', msg.uri));
+            });
+
+            // INVITE request retransmission
+            transport.pushHeapMessage(msg);
+
+            trS.on('state', function (state) {
+
+              if (state == 6) {
+                equal(trS.state, 6, 'Transaction state set to terminated.');
+                start();
+              }
+            });
+          });
+
+          // skip timer I
+          setAsReliable(transport);
+          trS._isReliable = true;
+
+          trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+        });
+
+        // INVITE request retransmission
+        transport.pushHeapMessage(msg);
+
+      });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
+
+
+asyncTest('Server transaction - non-invite, response retransmission', 3, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      transport.once('send', function (msgR) {
+        
+        transport.once('send', function (msgR) {
+
+          equal(msgR.status, 100, '100 Trying retransmission sent.');
+
+          trS.once('state', function (state) {
+
+            transport.once('send', function (msgR) {
+              equal(msgR.status, 404, '404 Not Found retransmission sent.');
+
+              transport.pushHeapMessage(msgR.toRequest('ACK', msg.uri));
+            });
+
+            // REGISTER request retransmission
+            transport.pushHeapMessage(msg);
+
+            trS.on('state', function (state) {
+
+              if (state == 6) {
+                equal(trS.state, 6, 'Transaction state set to terminated.');
+                start();
+              }
+            });
+          });
+
+          // skip timer J
+          setAsReliable(transport);
+          trS._isReliable = true;
+
+          trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+        });
+
+        // REGISTER request retransmission
+        transport.pushHeapMessage(msg);
+
+      });
+
+      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
 
     });
 
