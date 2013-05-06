@@ -690,3 +690,348 @@ asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function (
 });
 
 
+asyncTest('Client transaction - invite timeout A', 9, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  // mark heap protocol as unreliable
+  transport._protocols[protocolName][0].reliable = false;
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      equal(trC.state, 1, 'Transaction state set to calling.');
+    });
+
+    transport.on('send', function (msgRe) {
+      equal(trC.state, 1, 'Transaction state set to calling.');
+    });
+    
+    trC.once('timeout', function () {
+
+      equal(trC.state, 6, 'Transaction state set to terminated.');
+      start();
+    });
+
+  });
+
+});
+
+
+asyncTest('Client transaction - invite timer D, unreliable transport', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      transport.pushHeapMessage(msg.toResponse(100));
+    });
+
+    trC.once('message', function (msgR) {
+
+      trC.once('state', function (msgR) {
+
+        var timerTs = new Date().getTime();
+
+        trC.once('state', function (state) {
+ 
+          var timerEndTs = new Date().getTime();
+
+          ok(timerEndTs - timerTs > 30000, 'Timer D fired after more than 30 seconds.');
+          equal(trC.state, 6, 'Transaction state set to terminated.');
+          start();
+        });
+      });
+
+      transport.pushHeapMessage(msg.toResponse(404));
+    });
+
+  });
+
+});
+
+
+asyncTest('Client transaction - invite timer D, reliable transport', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  var protocol = transport._protocols[protocolName][0];
+
+  protocol.reliable = true;
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      transport.pushHeapMessage(msg.toResponse(100));
+    });
+
+    trC.once('message', function (msgR) {
+
+      trC.once('state', function (msgR) {
+
+        var timerTs = new Date().getTime();
+
+        trC.once('state', function (state) {
+ 
+          var timerEndTs = new Date().getTime();
+
+          ok(timerEndTs - timerTs < 30000, 'Timer D fired after less than 30 seconds.');
+          equal(trC.state, 6, 'Transaction state set to terminated.');
+          start();
+        });
+      });
+
+      transport.pushHeapMessage(msg.toResponse(404));
+    });
+
+  });
+
+});
+
+
+asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/100/200', 6, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage();
+    var trC = SIP.createTransaction(transport);
+    var retry = 4;
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+
+      transport.on('send', function (msgRe) {
+
+        if (--retry == 0) {    
+
+          transport.pushHeapMessage(msg.toResponse(100));
+
+          trC.once('state', function (state) {
+
+            equal(trC.state, 3, 'Transaction state set to proceeding.');
+
+            var timeoutTs = new Date().getTime();
+
+            trC.on('state', function (state) {
+
+              if (state == 6) {
+
+                var timeoutEndTs = new Date().getTime();
+
+                ok(true, 'Transaction state set to terminated.');
+                ok(timeoutEndTs - timeoutTs > 4500, 'Timer K fired after 5 seconds.');
+                start();
+              }
+              else if (state == 4) {
+                
+                timeoutTs = new Date().getTime();
+              }
+
+            });
+
+            transport.pushHeapMessage(msg.toResponse(200));
+          });
+
+        }
+        else {
+
+          equal(trC.state, 2, 'Transaction state set to trying.');
+        }
+      });
+
+    });
+  });
+
+});
+
+
+asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/403', 5, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage();
+    var trC = SIP.createTransaction(transport);
+    var retry = 4;
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+
+      transport.on('send', function (msgRe) {
+
+        if (--retry == 0) {    
+
+          trC.once('state', function (state) {
+
+            var timeoutTs = new Date().getTime();
+
+            trC.on('state', function (state) {
+
+              if (state == 6) {
+
+                var timeoutEndTs = new Date().getTime();
+
+                ok(true, 'Transaction state set to terminated.');
+                ok(timeoutEndTs - timeoutTs > 4500, 'Timer K fired after 5 seconds.');
+                start();
+              }
+              else if (state == 4) {
+                
+                timeoutTs = new Date().getTime();
+              }
+
+            });
+          });
+
+          transport.pushHeapMessage(msg.toResponse(403));
+        }
+        else {
+
+          equal(trC.state, 2, 'Transaction state set to trying.');
+        }
+      });
+
+    });
+  });
+
+});
+
+
+asyncTest('Server transaction - timer G/I, INVITE/100/404', 6, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var retry = 4;
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      trS.once('state', function (state) {
+
+          if (trS.state != 4) return;
+
+        setTimeout(function () {
+
+          transport.on('send', function (msgRe) {
+
+            if (--retry == 0) {
+
+              trS.once('state', function (state) {
+                equal(trS.state, 5, 'Transaction state set to confirmed.');
+
+                var timeoutTs = new Date().getTime();
+
+                trS.once('state', function (state) {
+
+                  var timeoutEndTs = new Date().getTime();
+
+                  ok(timeoutEndTs - timeoutTs > 4500, 'Timer I fired after 5 seconds.');
+                  equal(trS.state, 6, 'Transaction state set to terminated.');
+                  start();
+                });
+              });
+
+              transport.pushHeapMessage(msg.toResponse(404).toRequest('ACK', msg.uri));
+            }
+            else {
+              
+              equal(trS.state, 4, 'Transaction state set to completed.');
+            }
+          });
+        });
+
+      });
+
+      
+      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+
+      setTimeout(function () {
+        trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+      });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
+
+
+asyncTest('Server transaction - timer J, unreliable transport, REGISTER/100/403', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage(port);
+
+    transport.once('message', function (msg) {
+
+      var trS = SIP.createTransaction(transport, msg);
+
+      trS.once('state', function (state) {
+
+        trS.once('state', function (state) {
+
+          var timeoutTs = new Date().getTime();
+
+          trS.once('state', function (state) {
+
+            var timeoutEndTs = new Date().getTime();
+
+            ok(timeoutEndTs - timeoutTs > 30000, 'Timer J fired after more than 30 seconds.');
+            equal(trS.state, 6, 'Transaction state set to terminated.');
+            start();
+          });
+        });
+
+        trS.send(msg.toResponse(403), '0.0.0.0', 5060, protocolName);
+      });
+      
+      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+  });
+
+});
