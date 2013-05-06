@@ -360,6 +360,45 @@ asyncTest('Client transaction - invite state machine, INVITE/100/404', 4, functi
 });
 
 
+asyncTest('Client transaction - invite, INVITE/100/404/ACK', 3, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createInviteMessage(port);
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, 'heap', function (err) {
+      transport.pushHeapMessage(msg.toResponse(100));
+    });
+
+    trC.once('message', function (msgR) {
+
+      transport.once('send', function (msgACK) {
+  
+        equal(msgACK.method, 'ACK', 'ACK request sent by client transaction.');
+        equal(trC.state, 4, 'Transaction state set to completed.');
+
+        trC.once('state', function (state) {
+
+          equal(trC.state, 6, 'Transaction state set to terminated.');
+          start();
+        });
+
+      });
+
+      transport.pushHeapMessage(msg.toResponse(404));
+    });
+
+  });
+
+});
+
+
 asyncTest('Client transaction - invite state machine, INVITE/100/180/200', 4, function () {
 
   var port = portNumber++;
