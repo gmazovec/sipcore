@@ -97,6 +97,28 @@ test('API functions', 2, function () {
 });
 
 
+asyncTest('Client transaction - send error', 1, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage();
+    var trC = SIP.createTransaction(transport);
+
+    trC.on('error', function () {
+
+      ok(true, 'Transport error caught.');
+      start();
+    });
+
+    trC.send(msg, host, 5060, 'heap');
+
+   });
+});
+
+
 asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, function () {
 
   var port = portNumber++;
