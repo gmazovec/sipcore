@@ -123,6 +123,66 @@ asyncTest('Client transaction - send error', 1, function () {
 });
 
 
+asyncTest('Client transaction - resending request', 2, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage();
+    var trC = SIP.createTransaction(transport);
+
+    trC.send(msg, host, 5060, protocolName, function (err) {
+    
+      ok(!err, 'Initial request sent.');
+
+      trC.send(msg, host, 5060, protocolName, function (err) {
+      
+        ok(err, 'Request re-sending blocked.');
+        start();
+      });
+    });
+
+   });
+});
+
+
+asyncTest('Server transaction - sending responses', 1, function () {
+
+  var port = portNumber++;
+  var transport = SIP.createTransport();
+
+  transport.register(protocolName, port);
+
+  transport.listen(function (listenState) {
+
+    var msg = createRegisterMessage();
+    var trS = SIP.createTransaction(transport, msg);
+
+
+    trS.on('message', function (msg) {
+
+      trS.send(msg.toResponse(100));
+      trS.send(msg.toResponse(180));
+      trS.send(msg.toResponse(200));
+      
+      trS.send(msg.toResponse(200), function (err) {
+      
+        ok(err, 'Request re-sending blocked.');
+        start();
+      });
+
+    });
+
+    transport.pushHeapMessage(msg);
+
+   });
+});
+
+
 asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, function () {
 
   var port = portNumber++;
