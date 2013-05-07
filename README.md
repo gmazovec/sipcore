@@ -32,6 +32,16 @@ General purpose SIP library for JavaScript.
     Event: Transport.on('message', function (msg))
     Event: Transport.on('listening', function (listenState))
 
+    SIP.createTransaction (transport, [msg])
+    Transaction.state
+    Transaction.timeout
+    Transaction.error
+    Transaction.send (msg, [addr], [port], [protocol], [cb])
+    Transaction.send (msg, [cb])
+    Transaction.on('message', function (message))
+    Transaction.on('state', function (state)
+    Transaction.on('timeout', function ())
+
 
 ## Example
 
