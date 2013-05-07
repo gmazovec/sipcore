@@ -34,13 +34,15 @@ function setAsReliable (transport) {
 
 function createInviteMessage (port) {
 
+  var name = protocolName.toUpperCase();
+
   var msg = SIP.createMessage('INVITE', 'sip:alice@'+ host, {
-    'via': 'SIP/2.0/UDP 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
+    'via': 'SIP/2.0/'+ name +' 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
     'max-forwards': '70',
     'from': '<sip:bob@example.org>;tag=654b7-'+ new Date().getTime(),
     'to': '<sip:alice@example.org>',
     'call-id': new Date().getTime() + '',
-    'contact': '<sip:bob@'+ host + ':' + port + '>;transport=udp',
+    'contact': '<sip:bob@'+ host + ':' + port + '>;transport='+ protocolName,
     'cseq': '1 INVITE'
   });
 
@@ -50,13 +52,15 @@ function createInviteMessage (port) {
 
 function createRegisterMessage (port) {
 
+  var name = protocolName.toUpperCase();
+
   var msg = SIP.createMessage('REGISTER', 'sip:'+ host, {
-    'via': 'SIP/2.0/UDP 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
+    'via': 'SIP/2.0/'+ name +' 0.0.0.0:'+ port +';branch=8nb56v44rtb54tg',
     'max-forwards': '70',
     'from': '<sip:bob@example.org>;tag=654b7-'+ new Date().getTime(),
     'to': '<sip:bob@example.org>',
     'call-id': new Date().getTime() + '',
-    'contact': '<sip:bob@'+ host + ':' + port + '>;transport=udp',
+    'contact': '<sip:bob@'+ host + ':' + port + '>;transport='+ protocolName,
     'cseq': '1 REGISTER'
   });
 
@@ -113,7 +117,7 @@ asyncTest('Client transaction - send error', 1, function () {
       start();
     });
 
-    trC.send(msg, host, 5060, 'heap');
+    trC.send(msg, host, 5060, protocolName);
 
    });
 });
@@ -133,7 +137,7 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, func
     var msg = createRegisterMessage();
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 2, 'Transaction state set to trying.');
 
@@ -170,7 +174,7 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/100/403', 4, 
     var msg = createRegisterMessage();
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 2, 'Transaction state set to trying.');
 
@@ -231,7 +235,7 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/200', 3, func
         });
       });
       
-      trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(200));
 
     });
 
@@ -276,10 +280,10 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/100/403', 4, 
           });
         });
 
-        trS.send(msg.toResponse(403), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(403));
       });
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
     });
 
@@ -304,7 +308,7 @@ asyncTest('Client transaction - invite state machine, INVITE/200', 2, function (
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 1, 'Transaction state set to calling.');
 
@@ -336,7 +340,7 @@ asyncTest('Client transaction - invite state machine, INVITE/404', 3, function (
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 1, 'Transaction state set to calling.');
 
@@ -373,7 +377,7 @@ asyncTest('Client transaction - invite state machine, INVITE/100/404', 4, functi
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 1, 'Transaction state set to calling.');
 
@@ -417,7 +421,7 @@ asyncTest('Client transaction - invite, INVITE/100/404/ACK', 3, function () {
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
       transport.pushHeapMessage(msg.toResponse(100));
     });
 
@@ -461,7 +465,7 @@ asyncTest('Client transaction - invite state machine, INVITE/100/180/200', 4, fu
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 1, 'Transaction state set to calling.');
 
@@ -505,13 +509,16 @@ asyncTest('Client transaction - transport error', 2, function () {
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.on('error', function (err) {
 
-      ok(err, 'Error occured.');
       equal(trC.state, 6, 'Transaction state set to calling.');
-
       start();
     });
+
+    trC.send(msg, host, 5060, protocolName, function (err) {
+      ok(err, 'Error occured.');
+    });
+
   });
 
 });
@@ -542,7 +549,7 @@ asyncTest('Server transaction - invite state machine, INVITE/200', 2, function (
         start();
       });
       
-      trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(200));
 
     });
 
@@ -589,10 +596,10 @@ asyncTest('Server transaction - invite state machine, INVITE/100/404', 4, functi
       });
 
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
       setTimeout(function () {
-        trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(404));
       });
 
     });
@@ -630,14 +637,14 @@ asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, fu
       });
 
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
       setTimeout(function () {
 
-        trS.send(msg.toResponse(180), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(180));
 
         setTimeout(function () {
-          trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
+          trS.send(msg.toResponse(200));
         });
       });
 
@@ -681,7 +688,7 @@ asyncTest('Server transaction - sent 100 response', 3, function () {
           }
         });
 
-        trS.send(msg.toResponse(200), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(200));
       });
 
     });
@@ -741,7 +748,7 @@ asyncTest('Server transaction - invite, response retransmission', 4, function ()
           setAsReliable(transport);
           trS._isReliable = true;
 
-          trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+          trS.send(msg.toResponse(404));
         });
 
         // INVITE request retransmission
@@ -803,7 +810,7 @@ asyncTest('Server transaction - non-invite, response retransmission', 3, functio
           setAsReliable(transport);
           trS._isReliable = true;
 
-          trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+          trS.send(msg.toResponse(404));
         });
 
         // REGISTER request retransmission
@@ -811,7 +818,7 @@ asyncTest('Server transaction - non-invite, response retransmission', 3, functio
 
       });
 
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
     });
 
@@ -838,7 +845,7 @@ asyncTest('Client transaction - invite timeout B', 2, function () {
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
       equal(trC.state, 1, 'Transaction state set to calling.');
     });
     
@@ -865,7 +872,7 @@ asyncTest('Client transaction - non-invite timeout F', 2, function () {
     var msg = createRegisterMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
       equal(trC.state, 2, 'Transaction state set to trying.');
     });
     
@@ -892,7 +899,7 @@ asyncTest('Client transaction - non-invite timeout F in proceeding state', 3, fu
     var msg = createRegisterMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       equal(trC.state, 2, 'Transaction state set to trying.');
       transport.pushHeapMessage(msg.toResponse(100));
@@ -942,10 +949,10 @@ asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function (
       });
 
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
       setTimeout(function () {
-        trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(404));
       });
 
     });
@@ -969,7 +976,7 @@ asyncTest('Client transaction - invite timeout A', 9, function () {
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
       equal(trC.state, 1, 'Transaction state set to calling.');
     });
 
@@ -1000,7 +1007,7 @@ asyncTest('Client transaction - invite timer D, unreliable transport', 2, functi
     var msg = createInviteMessage(port);
     var trC = SIP.createTransaction(transport);
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
       transport.pushHeapMessage(msg.toResponse(100));
     });
 
@@ -1041,7 +1048,7 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/100/20
     var trC = SIP.createTransaction(transport);
     var retry = 4;
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       transport.on('send', function (msgRe) {
 
@@ -1101,7 +1108,7 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/403', 
     var trC = SIP.createTransaction(transport);
     var retry = 4;
 
-    trC.send(msg, host, 5060, 'heap', function (err) {
+    trC.send(msg, host, 5060, protocolName, function (err) {
 
       transport.on('send', function (msgRe) {
 
@@ -1196,10 +1203,10 @@ asyncTest('Server transaction - timer G/I, INVITE/100/404', 6, function () {
       });
 
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
       setTimeout(function () {
-        trS.send(msg.toResponse(404), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(404));
       });
 
     });
@@ -1242,10 +1249,10 @@ asyncTest('Server transaction - timer J, unreliable transport, REGISTER/100/403'
           });
         });
 
-        trS.send(msg.toResponse(403), '0.0.0.0', 5060, protocolName);
+        trS.send(msg.toResponse(403));
       });
       
-      trS.send(msg.toResponse(100), '0.0.0.0', 5060, protocolName);
+      trS.send(msg.toResponse(100));
 
     });
 
