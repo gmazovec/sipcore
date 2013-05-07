@@ -964,7 +964,7 @@ asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function (
 });
 
 
-asyncTest('Client transaction - invite timeout A', 9, function () {
+asyncTest('Client transaction - invite timeout A', 7, function () {
 
   var port = portNumber++;
   var transport = SIP.createTransport();
@@ -977,11 +977,10 @@ asyncTest('Client transaction - invite timeout A', 9, function () {
     var trC = SIP.createTransaction(transport);
 
     trC.send(msg, host, 5060, protocolName, function (err) {
-      equal(trC.state, 1, 'Transaction state set to calling.');
-    });
 
-    transport.on('send', function (msgRe) {
-      equal(trC.state, 1, 'Transaction state set to calling.');
+      transport.on('send', function (msgRe) {
+        equal(trC.state, 1, 'Transaction state set to calling.');
+      });
     });
     
     trC.once('timeout', function () {
@@ -1083,7 +1082,7 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/100/20
           });
 
         }
-        else {
+        else if (retry > 0) {
 
           equal(trC.state, 2, 'Transaction state set to trying.');
         }
@@ -1138,7 +1137,7 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/403', 
 
           transport.pushHeapMessage(msg.toResponse(403));
         }
-        else {
+        else if (retry > 0) {
 
           equal(trC.state, 2, 'Transaction state set to trying.');
         }
