@@ -265,7 +265,9 @@ asyncTest('Transport.send - send/receive request', 4, function () {
 
   var port = portNumber++;
   var transport = SIP.createTransport();
-  var message = SIP.createMessage('INVITE', 'sip:alice@example.org');
+  var message = SIP.createMessage('INVITE', 'sip:alice@example.org', {
+    'via': 'SIP/2.0/'+ protocolName.toUpperCase() +' 0.0.0.0:'+ port +';branch=zg46ytg5y3'
+  });
 
 
   transport.once('message', function (msg) {

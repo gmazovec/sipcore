@@ -19,3 +19,4 @@
 
 require('./unit/message');
 require('./unit/transport');
+require('./unit/transaction');
