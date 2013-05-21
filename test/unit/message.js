@@ -767,6 +767,12 @@ test('SIP.parseUri - case sensitivity and encoding', 1, function () {
 });
 
 
+test('SIP.parseUri - uri without user', 1, function () {
+
+  deepEqual(SIP.parseUri(messageData.uri_4, true), messageData.uriObject_4, 'SIP URI without user parsed.');
+});
+
+
 test('SIP.formatUri - format full URI address', 1, function () {
 
   deepEqual(SIP.formatUri(messageData.uriObject_1).toLowerCase(), messageData.uri_1.toLowerCase(), 'Full SIP URI formatted.');
