@@ -18,6 +18,7 @@
 
 
 var SIP = require('../../lib/sip');
+var heapProtocol = require('../../lib/protocol/heap');
 
 var protocolName = process.env.SIP_PROTOCOL || 'heap';
 var portNumber = 5060;
@@ -38,6 +39,22 @@ test('API functions', 6, function () {
   ok(transport.send, 'Function Transport.send is defined.');
   ok(transport.isListening, 'Function Transport.isListening is defined.');
   ok(transport.close, 'Function Transport.close is defined.');
+});
+
+
+asyncTest('Register custom protocol', 1, function () {
+
+  var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
+  var transport = SIP.createTransport();
+
+  transport.register(protocol, port);
+
+  transport.listen(function (listenState) {
+
+    ok(listenState[protocol.name], 'Custom protocol registered.');
+    start();
+  });
 });
 
 
