@@ -8,7 +8,7 @@ build:
 min: build/sip.min.js
 
 build/sip.min.js: build lib/sip.js
-	java -jar node_modules/closure-compiler/lib/vendor/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js lib/sip.js --js_output_file build/sip.min.js
+	closure --compilation_level SIMPLE_OPTIMIZATIONS --js lib/sip.js --js_output_file build/sip.min.js
 	if [ ! -f "lib/sip.min.js" ]; then ln -sv ../build/sip.min.js lib/sip.min.js; fi
 
 doc: lib/sip.js
