@@ -1,21 +1,18 @@
 
+SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/process.js lib/common/util.js lib/protocol/heap.js
+
+
 all: min doc
 
+min: assets/js/sipcore.min.js
 
-build:
-	if [ ! -d "build" ]; then mkdir build; fi
-
-min: build/sip.min.js
-
-build/sip.min.js: build lib/sip.js
-	closure --compilation_level SIMPLE_OPTIMIZATIONS --js lib/sip.js --js_output_file build/sip.min.js
-	if [ ! -f "lib/sip.min.js" ]; then ln -sv ../build/sip.min.js lib/sip.min.js; fi
+assets/js/sipcore.min.js: $(SRC) 
+	r.js -o build/build-package.js
 
 doc: lib/sip.js
 	mkdir -p doc-src/protocol/node
 	sed -r ':a; s%(.*)/\*.*\*/\n%\1%; ta; /\/\*/ !b; N; ba' lib/sip.js > doc-src/sip.js
 	docco -l classic -o doc doc-src/sip.js
-
 
 test-all:
 	NODE_PATH=./lib qunit -c lib/sip.js -t test/index.js
@@ -45,8 +42,7 @@ test-min-transaction: min
 clean: clean-lib clean-doc
 
 clean-lib:
-	unlink lib/sip.min.js
-	rm -rf build
+	rm -rf asserts
 
 clean-doc:
 	rm -rf doc doc-src

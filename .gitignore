@@ -1,7 +1,6 @@
-build
+assets
 deps
 doc
 doc-src
-lib/sip.min.js
 node_modules
 *.swp
