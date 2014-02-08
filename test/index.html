@@ -12,52 +12,11 @@
 // load scripts based on QUnit.config
 QUnit.config.autostart = false;
 
-// add checkbox for testing minified code
-QUnit.config.urlConfig.push({
-  id: 'min',
-  label: 'Minified source',
-  tooltip: 'Load minified source files instead of the regular unminified ones.'
-});
-
-// add checkbox for testing code coverage
-QUnit.config.urlConfig.push({
-  id: 'cov',
-  label: 'Code coverage',
-  tooltip: 'Load instrumented source files for checking code coverage.'
-});
-
-
-// not working, value undefined - (QUnit.config.min == 'true');
-var runCodeCoverage = location.search.indexOf('cov=true') > 0;
-var runMinified = !runCodeCoverage && location.search.indexOf('min=true') > 0; 
-var libPath = runCodeCoverage ? '../lib-cov' : '../lib';
-var libSrc = runMinified ? libPath + '/sip.min' : libPath + '/sip';
-
-/*
-process.env.JS_ENV = 'browser';
-
-// define library under original path
-if (runCodeCoverage || runMinified) {
-
-  var SIP = require(libSrc);
-
-  var pathname = resolve(libSrc);
-  var fixedPath = pathname
-        .replace('/lib-cov/', '/lib/')
-        .replace('.min', '');
-
-  require.cache[fixedPath] = require.cache[pathname];
-  delete require.cache[pathname];
-
-}
-*/
-
 require.config({
   basePath: '../lib',
   paths: {
     'assert': '../lib/common/assert',
     'events': '../lib/common/events',
-    'process': '../lib/common/process',
     'util': '../lib/common/util',
     'sip': '../lib/sip',
     'protocol': '../lib/protocol',

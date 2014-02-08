@@ -22,6 +22,7 @@ if (typeof define !== 'function') { var define = require('amdefine')(module) };
 define(function (require, exports) {
 
 var SIP = require('sip');
+var heapProtocol = require('protocol/heap');
 
 var protocolName = 'heap';
 var host = '127.0.0.1';
@@ -75,9 +76,10 @@ function createRegisterMessage (port) {
 // patch SIP.Transport
 (function () {
 
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, portNumber);
+  transport.register(protocol, portNumber);
 
   transport.__proto__.pushHeapMessage = function (msg) {
   
@@ -130,9 +132,10 @@ asyncTest('Client transaction - send error', 1, function () {
 asyncTest('Client transaction - resending request', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -157,9 +160,10 @@ asyncTest('Client transaction - resending request', 2, function () {
 asyncTest('Server transaction - sending responses', 1, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -190,9 +194,10 @@ asyncTest('Server transaction - sending responses', 1, function () {
 asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -227,9 +232,10 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/200', 3, func
 asyncTest('Client transaction - non-invite state machine, REGISTER/100/403', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -272,9 +278,10 @@ asyncTest('Client transaction - non-invite state machine, REGISTER/100/403', 4, 
 asyncTest('Server transaction - non-invite state machine, REGISTER/200', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -313,9 +320,10 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/200', 3, func
 asyncTest('Server transaction - non-invite state machine, REGISTER/100/403', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -361,9 +369,10 @@ asyncTest('Server transaction - non-invite state machine, REGISTER/100/403', 4, 
 asyncTest('Client transaction - invite state machine, INVITE/200', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -393,9 +402,10 @@ asyncTest('Client transaction - invite state machine, INVITE/200', 2, function (
 asyncTest('Client transaction - invite state machine, INVITE/404', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -430,9 +440,10 @@ asyncTest('Client transaction - invite state machine, INVITE/404', 3, function (
 asyncTest('Client transaction - invite state machine, INVITE/100/404', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -474,9 +485,10 @@ asyncTest('Client transaction - invite state machine, INVITE/100/404', 4, functi
 asyncTest('Client transaction - invite, INVITE/100/404/ACK', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -518,9 +530,10 @@ asyncTest('Client transaction - invite, INVITE/100/404/ACK', 3, function () {
 asyncTest('Client transaction - invite state machine, INVITE/100/180/200', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -591,9 +604,10 @@ asyncTest('Client transaction - transport error', 2, function () {
 asyncTest('Server transaction - invite state machine, INVITE/200', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
   
   setAsReliable(transport);
 
@@ -627,9 +641,10 @@ asyncTest('Server transaction - invite state machine, INVITE/200', 2, function (
 asyncTest('Server transaction - invite state machine, INVITE/100/404', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -678,9 +693,10 @@ asyncTest('Server transaction - invite state machine, INVITE/100/404', 4, functi
 asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -724,9 +740,10 @@ asyncTest('Server transaction - invite state machine, INVITE/100/180/200', 2, fu
 asyncTest('Server transaction - sent 100 response', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   setAsReliable(transport);
 
@@ -767,9 +784,10 @@ asyncTest('Server transaction - sent 100 response', 3, function () {
 asyncTest('Server transaction - invite, response retransmission', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -832,9 +850,10 @@ asyncTest('Server transaction - invite, response retransmission', 4, function ()
 asyncTest('Server transaction - non-invite, response retransmission', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -900,9 +919,10 @@ QUnit.module('Transaction timeouts');
 asyncTest('Client transaction - invite timeout B', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -927,9 +947,10 @@ asyncTest('Client transaction - invite timeout B', 2, function () {
 asyncTest('Client transaction - non-invite timeout F', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -954,9 +975,10 @@ asyncTest('Client transaction - non-invite timeout F', 2, function () {
 asyncTest('Client transaction - non-invite timeout F in proceeding state', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -987,9 +1009,10 @@ asyncTest('Client transaction - non-invite timeout F in proceeding state', 3, fu
 asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1031,9 +1054,10 @@ asyncTest('Server transaction - invite timeout H, INVITE/100/404', 3, function (
 asyncTest('Client transaction - invite timeout A', 7, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1061,9 +1085,10 @@ asyncTest('Client transaction - invite timeout A', 7, function () {
 asyncTest('Client transaction - invite timer D, unreliable transport', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1101,9 +1126,10 @@ asyncTest('Client transaction - invite timer D, unreliable transport', 2, functi
 asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/100/200', 6, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1161,9 +1187,10 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/100/20
 asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/403', 5, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1216,9 +1243,10 @@ asyncTest('Client transaction - timer E/K, unreliable transport, REGISTER/403', 
 asyncTest('Server transaction - timer G/I, INVITE/100/404', 6, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
@@ -1284,9 +1312,10 @@ asyncTest('Server transaction - timer G/I, INVITE/100/404', 6, function () {
 asyncTest('Server transaction - timer J, unreliable transport, REGISTER/100/403', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listenState) {
 
