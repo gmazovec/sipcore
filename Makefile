@@ -10,6 +10,11 @@ SRC = lib/sip.js lib/export.js lib/common/assert.js lib/common/events.js lib/com
 
 all: min doc
 
+deps:
+	npm i
+	bower i almond#0.2.9
+	bower i requirejs#2.1.10
+
 min: assets/js/sipcore.min.js
 
 assets/js/sipcore.min.js: $(SRC) 
@@ -31,6 +36,11 @@ test-transport:
 
 test-transaction:
 	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/transaction.js
+
+clean-all: clean-deps clean
+
+clean-deps:
+	rm -rf deps node_modules
 
 clean: clean-lib clean-doc
 
