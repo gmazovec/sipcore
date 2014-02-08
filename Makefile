@@ -1,5 +1,11 @@
 
-SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/util.js lib/protocol/heap.js
+NFLAGS = NODE_PATH=./lib
+
+UNIT = qunit
+UNIT_MAIN = lib/sip.js
+UNIT_PATH = test/unit
+
+SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/util.js
 
 
 all: min doc
@@ -10,34 +16,21 @@ assets/js/sipcore.min.js: $(SRC)
 	r.js -o build/build-package.js
 
 doc: lib/sip.js
-	mkdir -p doc-src/protocol/node
+	mkdir -p doc-src
 	sed -r ':a; s%(.*)/\*.*\*/\n%\1%; ta; /\/\*/ !b; N; ba' lib/sip.js > doc-src/sip.js
 	docco -l classic -o doc doc-src/sip.js
 
 test-all:
-	NODE_PATH=./lib qunit -c lib/sip.js -t test/index.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t test/index.js
 
 test-message:
-	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/message.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/message.js
 
 test-transport:
-	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/transport.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/transport.js
 
 test-transaction:
-	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/transaction.js
-
-test-min: min
-	NODE_PATH=./lib qunit -c build/sip.min.js -t test/index.js
-
-test-min-message: min
-	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/message.js
-
-test-min-transport: min
-	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/transport.js
-
-test-min-transaction: min
-	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/transaction.js
-
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/transaction.js
 
 clean: clean-lib clean-doc
 
