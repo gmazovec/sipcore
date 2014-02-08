@@ -5,7 +5,7 @@ UNIT = qunit
 UNIT_MAIN = lib/sip.js
 UNIT_PATH = test/unit
 
-SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/util.js
+SRC = lib/sip.js lib/export.js lib/common/assert.js lib/common/events.js lib/common/util.js
 
 
 all: min doc
