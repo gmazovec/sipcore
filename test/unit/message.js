@@ -17,7 +17,11 @@
 */
 
 
-var SIP = require('../../lib/sip');
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
+
+define(function (require, exports) {
+
+var SIP = require('sip');
 var messageData = require('../data/message');
 
 
@@ -767,6 +771,12 @@ test('SIP.parseUri - case sensitivity and encoding', 1, function () {
 });
 
 
+test('SIP.parseUri - uri without user', 1, function () {
+
+  deepEqual(SIP.parseUri(messageData.uri_4, true), messageData.uriObject_4, 'SIP URI without user parsed.');
+});
+
+
 test('SIP.formatUri - format full URI address', 1, function () {
 
   deepEqual(SIP.formatUri(messageData.uriObject_1).toLowerCase(), messageData.uri_1.toLowerCase(), 'Full SIP URI formatted.');
@@ -784,4 +794,6 @@ test('SIP.formatUri - empty uri object', 1, function () {
   var uri = SIP.formatUri({});
 
   deepEqual(uri, '', 'Empty URI object formated to empty string.');
+});
+
 });

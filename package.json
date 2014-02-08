@@ -5,19 +5,14 @@
   "author": "Gregor Mazovec <gregor.mazovec@gmail.com>",
   "license": "LGPL3",
   "main" : "./lib/sip.js",
-  "devDependencies": {
-    "closure-compiler": "0.2.x",
-    "qunit": "0.5.x"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/qunit -c lib/sip -t test"
-  },
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.x"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/gmazovec/sipcore.js.git"
   },
+  "dependencies": {
+    "amdefine": "~0.1.0"
+  }
 }

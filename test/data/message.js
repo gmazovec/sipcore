@@ -17,6 +17,10 @@
 */
 
 
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
+
+define(function (require, exports) {
+
 // INVITE message - strict syntax
 exports.raw01_1 = 'INVITE sip:bob@biloxi.example.com SIP/2.0\r\n' +
   'Via: SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9\r\n' +
@@ -830,16 +834,17 @@ exports.object09 = {
 
 // SIP URIs
 
-exports.uri_1 = 'sips:alice:secret@atlanta.example.com:5061;transport=tls?Subject=Missed%20call&Priority=urgent';
+exports.uri_1 = 'sips:alice.(at).*atlanta.com~it-department:mypass&2051$GG@atlanta.example.com:5061;transport=tls;ttl=60?Subject=Missed%20call&Priority=urgent';
 
 exports.uriObject_1 = {
   'scheme': 'sips',
-  'user': 'alice',
-  'password': 'secret',
+  'user': 'alice.(at).*atlanta.com~it-department',
+  'password': 'mypass&2051$GG',
   'hostname': 'atlanta.example.com',
   'port': '5061',
   'params': {
-    'transport': 'tls'
+    'transport': 'tls',
+    'ttl': '60'
   },
   'headers': {
     'subject': 'Missed call',
@@ -852,13 +857,11 @@ exports.uri_2 = 'sip:+385-555-1234567;PostD=pp22;isub=1411@foo.com;user=phone';
 
 exports.uriObject_2 = {
   'scheme': 'sip',
-  'user': '+385-555-1234567',
+  'user': '+385-555-1234567;PostD=pp22;isub=1411',
   'password': '',
-  'hostname': '',
+  'hostname': 'foo.com',
   'port': '',
   'params': {
-    'postd':'pp22',
-    'isub': '1411@foo.com',
     'user': 'phone'
   },
   'headers': {}
@@ -878,3 +881,18 @@ exports.uriObject_3 = {
   },
   'headers': {}
 };
+
+
+exports.uri_4 = 'sip:example.org';
+
+exports.uriObject_4 = {
+  'scheme': 'sip',
+  'user': '',
+  'password': '',
+  'hostname': 'example.org',
+  'port': '',
+  'params': {},
+  'headers': {}
+};
+
+});

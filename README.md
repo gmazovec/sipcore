@@ -3,12 +3,17 @@ sipcore.js
 
 General purpose SIP library for JavaScript.
 
+## Installation
+
+    npm install sipcore
+
 ## API
 
     SIP.format (msg, compact)
     SIP.parse (text)
     SIP.parseUri (text)
     SIP.formatUri (uri)
+    SIP.isMessage (obj)
 
     SIP.createMessage (obj)
     Message.getHeader (name, parse, pos)
@@ -27,6 +32,16 @@ General purpose SIP library for JavaScript.
     Event: Transport.on('message', function (msg))
     Event: Transport.on('listening', function (listenState))
 
+    SIP.createTransaction (transport, [msg])
+    Transaction.state
+    Transaction.timeout
+    Transaction.error
+    Transaction.send (msg, [addr], [port], [protocol], [cb])
+    Transaction.send (msg, [cb])
+    Transaction.on('message', function (message))
+    Transaction.on('state', function (state)
+    Transaction.on('timeout', function ())
+
 
 ## Example
 
@@ -41,7 +56,7 @@ General purpose SIP library for JavaScript.
     });
 
     transport.on('message', function (msg) {
-      console.log('-- new SIP message);
+      console.log('-- new SIP message');
       console.log(msg.format());
     });
 
