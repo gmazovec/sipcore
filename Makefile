@@ -42,7 +42,7 @@ test-min-transaction: min
 clean: clean-lib clean-doc
 
 clean-lib:
-	rm -rf asserts
+	rm -rf assets
 
 clean-doc:
 	rm -rf doc doc-src
