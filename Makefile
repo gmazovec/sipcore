@@ -1,52 +1,51 @@
 
+NFLAGS = NODE_PATH=./lib
+
+UNIT = qunit
+UNIT_MAIN = lib/sip.js
+UNIT_PATH = test/unit
+
+SRC = lib/sip.js lib/export.js lib/common/assert.js lib/common/events.js lib/common/util.js
+
+
 all: min doc
 
+deps:
+	npm i
+	bower i almond#0.2.9
+	bower i requirejs#2.1.10
 
-build:
-	if [ ! -d "build" ]; then mkdir build; fi
+min: assets/js/sipcore.min.js
 
-min: build/sip.min.js
-
-build/sip.min.js: build lib/sip.js
-	java -jar node_modules/closure-compiler/lib/vendor/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js lib/sip.js --js_output_file build/sip.min.js
-	if [ ! -f "lib/sip.min.js" ]; then ln -sv ../build/sip.min.js lib/sip.min.js; fi
+assets/js/sipcore.min.js: $(SRC) 
+	r.js -o build/build-package.js
 
 doc: lib/sip.js
-	mkdir -p doc-src/protocol/node
+	mkdir -p doc-src
 	sed -r ':a; s%(.*)/\*.*\*/\n%\1%; ta; /\/\*/ !b; N; ba' lib/sip.js > doc-src/sip.js
 	docco -l classic -o doc doc-src/sip.js
 
-
 test-all:
-	qunit -c lib/sip.js -t test/index.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t test/index.js
 
 test-message:
-	qunit -c lib/sip.js -t test/unit/message.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/message.js
 
 test-transport:
-	qunit -c lib/sip.js -t test/unit/transport.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/transport.js
 
 test-transaction:
-	qunit -c lib/sip.js -t test/unit/transaction.js
+	$(NFLAGS) $(UNIT) -c $(UNIT_MAIN) -t $(UNIT_PATH)/transaction.js
 
-test-min: min
-	qunit -c build/sip.min.js -t test/index.js
+clean-all: clean-deps clean
 
-test-min-message: min
-	qunit -c build/sip.min.js -t test/unit/message.js
-
-test-min-transport: min
-	qunit -c build/sip.min.js -t test/unit/transport.js
-
-test-min-transaction: min
-	qunit -c build/sip.min.js -t test/unit/transaction.js
-
+clean-deps:
+	rm -rf deps node_modules
 
 clean: clean-lib clean-doc
 
 clean-lib:
-	unlink lib/sip.min.js
-	rm -rf build
+	rm -rf assets
 
 clean-doc:
 	rm -rf doc doc-src

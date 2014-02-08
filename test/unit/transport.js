@@ -17,10 +17,13 @@
 */
 
 
-var SIP = require('../../lib/sip');
-var heapProtocol = require('../../lib/protocol/heap');
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
 
-var protocolName = process.env.SIP_PROTOCOL || 'heap';
+define(function (require, exports) {
+
+var SIP = require('sip');
+var heapProtocol = require('protocol/heap');
+var protocolName = 'heap';
 var portNumber = 5060;
 
 
@@ -61,9 +64,10 @@ asyncTest('Register custom protocol', 1, function () {
 asyncTest('Transport.listen/close - call multiple times', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function () {
 
@@ -95,9 +99,10 @@ asyncTest('Transport.listen/close - call multiple times', 4, function () {
 asyncTest('Transport.listen - check listening flags', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function (listening) {
 
@@ -119,10 +124,12 @@ asyncTest('Transport.listen - check listening flags', 4, function () {
 
 asyncTest('Transport.isListening - calling with argument', 4, function () {
 
-  var port = portNumber++;
+  var port = portNumber
+  var protocol = heapProtocol.createProtocol();
+;
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   equal(transport.isListening(protocolName), 0, 'Protocol is not listening.');
 
@@ -147,9 +154,10 @@ asyncTest('Transport.isListening - calling with argument', 4, function () {
 asyncTest('Transport.isListening - calling without argument', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   equal(transport.isListening()[protocolName], 0, 'Protocol is not listening.');
 
@@ -174,9 +182,10 @@ asyncTest('Transport.isListening - calling without argument', 4, function () {
 test('Transport.register - bind address in use', 1, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   throws(function () {
     transport.register(protocolName, port);
@@ -187,9 +196,10 @@ test('Transport.register - bind address in use', 1, function () {
 asyncTest('Transport.onclose - closing protocol', 1, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function () {
 
@@ -208,11 +218,12 @@ asyncTest('Transport.onclose - closing protocol', 1, function () {
 asyncTest('Transport.send - invalid message', 1, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
   var message = {};
 
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function () {
 
@@ -234,10 +245,10 @@ asyncTest('Transport.send - missing via header', 1, function () {
 
   var port = portNumber++;
   var transport = SIP.createTransport();
+  var protocol = heapProtocol.createProtocol();
   var message = SIP.createMessage('200', 'OK');
 
-
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
 
   transport.listen(function () {
 
@@ -281,6 +292,7 @@ asyncTest('Transport.send - unknown protocol', 1, function () {
 asyncTest('Transport.send - send/receive request', 4, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
   var message = SIP.createMessage('INVITE', 'sip:alice@example.org', {
     'via': 'SIP/2.0/'+ protocolName.toUpperCase() +' 0.0.0.0:'+ port +';branch=zg46ytg5y3'
@@ -307,7 +319,7 @@ asyncTest('Transport.send - send/receive request', 4, function () {
     });
   });
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
   transport.listen();
 
 });
@@ -316,6 +328,7 @@ asyncTest('Transport.send - send/receive request', 4, function () {
 asyncTest('Transport.send - send/receive response', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
   var message = SIP.createMessage('200', 'OK');
 
@@ -337,7 +350,7 @@ asyncTest('Transport.send - send/receive response', 2, function () {
     });
   });
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
   transport.listen();
 
 });
@@ -346,6 +359,7 @@ asyncTest('Transport.send - send/receive response', 2, function () {
 asyncTest('Transport.send - client socket timeout', 2, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
   var message = SIP.createMessage('INVITE', 'sip:alice@example.org');
 
@@ -375,7 +389,7 @@ asyncTest('Transport.send - client socket timeout', 2, function () {
 
   });
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
   transport.listen();
 
 });
@@ -384,6 +398,7 @@ asyncTest('Transport.send - client socket timeout', 2, function () {
 asyncTest('Transport.send - re-initialize socket', 1, function () {
 
   var port = portNumber++;
+  var protocol = heapProtocol.createProtocol();
   var transport = SIP.createTransport();
   var message = SIP.createMessage('INVITE', 'sip:alice@example.org');
 
@@ -414,7 +429,9 @@ asyncTest('Transport.send - re-initialize socket', 1, function () {
 
   });
 
-  transport.register(protocolName, port);
+  transport.register(protocol, port);
   transport.listen();
+
+});
 
 });

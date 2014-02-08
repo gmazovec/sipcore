@@ -17,7 +17,11 @@
 */
 
 
-var SIP = require('../../lib/sip');
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
+
+define(function (require, exports) {
+
+var SIP = require('sip');
 var messageData = require('../data/message');
 
 
@@ -790,4 +794,6 @@ test('SIP.formatUri - empty uri object', 1, function () {
   var uri = SIP.formatUri({});
 
   deepEqual(uri, '', 'Empty URI object formated to empty string.');
+});
+
 });
