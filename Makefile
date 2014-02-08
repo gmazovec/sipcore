@@ -1,5 +1,5 @@
 
-SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/process.js lib/common/util.js lib/protocol/heap.js
+SRC = lib/sip.js lib/common/assert.js lib/common/events.js lib/common/util.js lib/protocol/heap.js
 
 
 all: min doc

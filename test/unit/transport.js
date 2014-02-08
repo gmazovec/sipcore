@@ -19,12 +19,11 @@
 
 if (typeof define !== 'function') { var define = require('amdefine')(module) };
 
-define(['require', 'exports', 'process'],
-    function (require, exports, process) {
+define(function (require, exports) {
 
 var SIP = require('sip');
 var heapProtocol = require('protocol/heap');
-var protocolName = process.env.SIP_PROTOCOL || 'heap';
+var protocolName = 'heap';
 var portNumber = 5060;
 
 
