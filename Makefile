@@ -18,28 +18,28 @@ doc: lib/sip.js
 
 
 test-all:
-	qunit -c lib/sip.js -t test/index.js
+	NODE_PATH=./lib qunit -c lib/sip.js -t test/index.js
 
 test-message:
-	qunit -c lib/sip.js -t test/unit/message.js
+	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/message.js
 
 test-transport:
-	qunit -c lib/sip.js -t test/unit/transport.js
+	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/transport.js
 
 test-transaction:
-	qunit -c lib/sip.js -t test/unit/transaction.js
+	NODE_PATH=./lib qunit -c lib/sip.js -t test/unit/transaction.js
 
 test-min: min
-	qunit -c build/sip.min.js -t test/index.js
+	NODE_PATH=./lib qunit -c build/sip.min.js -t test/index.js
 
 test-min-message: min
-	qunit -c build/sip.min.js -t test/unit/message.js
+	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/message.js
 
 test-min-transport: min
-	qunit -c build/sip.min.js -t test/unit/transport.js
+	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/transport.js
 
 test-min-transaction: min
-	qunit -c build/sip.min.js -t test/unit/transaction.js
+	NODE_PATH=./lib qunit -c build/sip.min.js -t test/unit/transaction.js
 
 
 clean: clean-lib clean-doc

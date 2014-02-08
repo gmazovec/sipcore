@@ -17,6 +17,10 @@
 */
 
 
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
+
+define(function (require, exports) {
+
 // INVITE message - strict syntax
 exports.raw01_1 = 'INVITE sip:bob@biloxi.example.com SIP/2.0\r\n' +
   'Via: SIP/2.0/TCP client.atlanta.example.com:5060;branch=z9hG4bK74bf9\r\n' +
@@ -890,3 +894,5 @@ exports.uriObject_4 = {
   'params': {},
   'headers': {}
 };
+
+});

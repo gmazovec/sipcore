@@ -17,7 +17,11 @@
 */
 
 
-var SIP = require('../../lib/sip');
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
+
+define(function (require, exports) {
+
+var SIP = require('sip');
 
 var protocolName = 'heap';
 var host = '127.0.0.1';
@@ -1318,5 +1322,7 @@ asyncTest('Server transaction - timer J, unreliable transport, REGISTER/100/403'
     transport.pushHeapMessage(msg);
 
   });
+
+});
 
 });

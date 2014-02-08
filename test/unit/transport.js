@@ -17,9 +17,13 @@
 */
 
 
-var SIP = require('../../lib/sip');
-var heapProtocol = require('../../lib/protocol/heap');
+if (typeof define !== 'function') { var define = require('amdefine')(module) };
 
+define(['require', 'exports', 'process'],
+    function (require, exports, process) {
+
+var SIP = require('sip');
+var heapProtocol = require('protocol/heap');
 var protocolName = process.env.SIP_PROTOCOL || 'heap';
 var portNumber = 5060;
 
@@ -416,5 +420,7 @@ asyncTest('Transport.send - re-initialize socket', 1, function () {
 
   transport.register(protocolName, port);
   transport.listen();
+
+});
 
 });

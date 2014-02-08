@@ -5,7 +5,7 @@
   <title>Unit Test Suite | SIPCore.js</title>
   <link rel="stylesheet" href="./js/qunit.css">
   <script src="./js/qunit.js"></script>
-  <script src="../lib/common/require.js"></script>
+  <script src="../deps/requirejs/require.js"></script>
   
   <script>
 
@@ -33,6 +33,7 @@ var runMinified = !runCodeCoverage && location.search.indexOf('min=true') > 0;
 var libPath = runCodeCoverage ? '../lib-cov' : '../lib';
 var libSrc = runMinified ? libPath + '/sip.min' : libPath + '/sip';
 
+/*
 process.env.JS_ENV = 'browser';
 
 // define library under original path
@@ -49,9 +50,38 @@ if (runCodeCoverage || runMinified) {
   delete require.cache[pathname];
 
 }
+*/
 
-require('./index');
-QUnit.start();
+require.config({
+  basePath: '../lib',
+  paths: {
+    'assert': '../lib/common/assert',
+    'events': '../lib/common/events',
+    'process': '../lib/common/process',
+    'util': '../lib/common/util',
+    'sip': '../lib/sip',
+    'protocol': '../lib/protocol',
+  }
+});
+
+var deps = [
+  'events',
+  'util',
+  'sip',
+  'assert',
+  'protocol/heap'
+];
+var tests = [
+  './unit/message',
+  './unit/transport',
+  './unit/transaction'
+];
+
+require(deps, function () {
+  require(tests, function () {;
+    QUnit.start();
+  });
+});
   
   </script>
 </head>
