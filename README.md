@@ -23,7 +23,7 @@ General purpose SIP library for JavaScript.
     Message.copy ()
     Message.format (compact)
 
-    SIP.createProtocol([contructor], [options])
+    SIP.createProtocol([constructor], [options])
 
     SIP.createTransport ()
     Transport.register (protocol, [port], [address])
@@ -54,7 +54,7 @@ var transport = sip.createTransport();
 
 transport.register(protocol);
 transport.listen(function (listenState) {
-    console.log('* UDP listening...', listenState.udp ? 'ok' : 'failed');
+    console.log('* HEAP listening...', listenState.heap ? 'ok' : 'failed');
 });
 
 transport.on('message', function (msg) {
