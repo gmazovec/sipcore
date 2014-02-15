@@ -6,16 +6,18 @@ https://code.google.com/p/homer/wiki/HEP
 
 */
 
-var sip = require('sipcore');
+var sip = require('..');
+var udp = require('../lib/protocol/node/udp');
+
 var transport = sip.createTransport();
+var protocol = sip.createProtocol(udp.Protocol);
 
-process.env.JS_ENV = 'node';
+protocol.format = 'hep1';
+transport.register(protocol, 9060, '0.0.0.0');
 
-transport.register('udpHEP1', 9060, "0.0.0.0");
 transport.listen(function (listenState) {
-  console.log('* UDP listening...', listenState.udpHEP1 ? 'ok' : 'failed');
+  console.log('* UDP listening...', listenState.udp ? 'ok' : 'failed');
 });
-
 
 transport.on('message', function (msg) {
   console.log('-- new SIP message');
