@@ -10,6 +10,11 @@ dist: lib/sip.js
 	@echo "return exports;" >> dist/sipcore.js
 	@echo "}({}));" >> dist/sipcore.js
 
+check: lint
+
+lint:
+	@jslint lib/*.js lib/common/*.js lib/protocol/*.js
+
 doc: lib/sip.js
 	@mkdir -p doc-src
 	@sed -r ':a; s%(.*)/\*.*\*/\n%\1%; ta; /\/\*/ !b; N; ba' lib/sip.js > doc-src/sip.js
