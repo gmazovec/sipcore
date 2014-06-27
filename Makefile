@@ -21,7 +21,7 @@ doc: lib/sip.js
 	@docco -l classic -o doc doc-src/sip.js
 
 clean:
-	@rm -rf dist doc doc-src
+	@rm -rf doc doc-src
 
 PHONY: all
 
