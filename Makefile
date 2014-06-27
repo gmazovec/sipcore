@@ -13,7 +13,7 @@ dist: lib/sip.js
 check: lint
 
 lint:
-	@jslint lib/*.js lib/common/*.js lib/protocol/*.js
+	@jslint lib/*.js lib/common/*.js
 
 doc: lib/sip.js
 	@mkdir -p doc-src
