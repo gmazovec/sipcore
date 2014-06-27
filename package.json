@@ -11,8 +11,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/gmazovec/sipcore.js.git"
-  },
-  "dependencies": {
-    "amdefine": "~0.1.0"
   }
 }
