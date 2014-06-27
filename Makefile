@@ -7,6 +7,7 @@ dist: lib/sip.js
 	@echo "var SIPCORE = (function (exports) {" > dist/sipcore.js
 	@cat lib/common/*.js >> dist/sipcore.js
 	@sed -r "s/require\('(.*)'\)/\1/g" lib/sip.js >> dist/sipcore.js
+	@echo 'exports.EventEmitter = EventEmitter;' >> dist/sipcore.js
 	@echo "return exports;" >> dist/sipcore.js
 	@echo "}({}));" >> dist/sipcore.js
 

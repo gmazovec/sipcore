@@ -3135,5 +3135,6 @@ exports.createProtocol = createProtocol;
 exports.createTransport = createTransport;
 exports.createTransaction = createTransaction;
 
+exports.EventEmitter = EventEmitter;
 return exports;
 }({}));
