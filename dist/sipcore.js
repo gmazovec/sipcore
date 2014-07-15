@@ -571,7 +571,7 @@ function splitHeaderValues(value) {
 
         if (!inQuote && c === COMMA) {
 
-            values.push(value.substr(start, i - 1));
+            values.push(value.substr(start, i - start - 1));
             start = i;
         }
     }
