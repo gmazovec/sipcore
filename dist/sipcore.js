@@ -1056,7 +1056,7 @@ function initParser() {
 
 // ## Value Parsers
 
-var uriRe = /^(\w+):([\w\-\.\!\~\*\'\(\)\&\=\+\$\,\;\?\/]+):?([\w\-\.\!\~\*\'\(\)\&\=\+\$\,]+)?@?([\w\.]+)?:?(\d+)?;?([\w=@;\.\-_]+)?\??([\S\s]+)?/;
+var uriRe = /^(\w+):([\w\-\.\!\~\*\'\(\)\&\=\+\$\,\;\?\/]+):?([\w\-\.\!\~\*\'\(\)\&\=\+\$\,]+)?@?([\w\-\.]+)?:?(\d+)?;?([\w=@;\.\-_]+)?\??([\S\s]+)?/;
 var viaRe = /SIP\/(\d\.\d)\/(\w+)\s+([\w\-\.]+):?(\d*)?;?(.*)?/;
 
 
@@ -1247,6 +1247,45 @@ function parseContact(value) {
 }
 
 
+// Parser for *Content-Type* header value.
+//
+//     parseContentType('application/sdp; charset=utf-8');
+//
+//     // result
+//     {
+//       'type': 'application/sdp',
+//       'params': {
+//         'charset': 'utf-8'
+//       }
+//     }
+/**
+ * @param {string} value
+ * @return {(Object.<string, *>)}
+ */
+function parseContentType(value) {
+
+    var i;
+    var subParts;
+    var paramName, paramValue;
+    var parts = value.split(';');
+    var header = { type: parts[0], params: {}};
+
+    if (parts[1]) {
+        subParts = parts[1].split(',');
+
+        for (i = 0; i < subParts.length; i += 1) {
+
+            parts = subParts[i].split('=');
+            paramName = parts[0].trim();
+            paramValue = parts[1].trim();
+            header.params[paramName] = paramValue;
+        }
+    }
+
+    return header;
+}
+
+
 // Parser for *CSeq* header value.
 //
 //     parseCSeq('242 INVITE');
@@ -1275,6 +1314,7 @@ function parseCSeq(value) {
 var parsers = {
 
     'contact': parseContact,
+    'content-type': parseContentType,
     'cseq': parseCSeq,
     'from': parseContact,
     'via': parseVia,
@@ -1315,6 +1355,23 @@ function stringifyContact(value) {
 /**
  * @param {Object} value
  */
+function stringifyContentType(value) {
+
+    var opts = [];
+    var params = value.params;
+    var param;
+
+    for (param in params) {
+        opts.push(param + '=' + params[param]);
+    }
+
+    return value.type + ';' + opts.join(',');
+}
+
+
+/**
+ * @param {Object} value
+ */
 function stringifyCSeq(value) {
 
     return value['seq'] + ' ' + value.method;
@@ -1341,6 +1398,7 @@ function stringifyVia(value) {
 var stringifiers = {
 
     'contact': stringifyContact,
+    'content-type': stringifyContentType,
     'cseq': stringifyCSeq,
     'from': stringifyContact,
     'via': stringifyVia,
