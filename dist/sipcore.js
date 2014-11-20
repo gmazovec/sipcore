@@ -313,6 +313,7 @@ var SIP_INVITE    = 'INVITE';
 var SIP_MESSAGE   = 'MESSAGE';
 var SIP_NOTIFY    = 'NOTIFY';
 var SIP_OPTIONS   = 'OPTIONS';
+var SIP_PING     = 'PING';
 var SIP_PRACK     = 'PRACK';
 var SIP_PUBLISH   = 'PUBLISH';
 var SIP_REFER     = 'REFER';
@@ -849,7 +850,10 @@ function initParser() {
 
             case state_req_method:
 
-                if (method === SIP_PRACK && c === 'U') {
+                if (method === SIP_PRACK && c === 'I') {
+                    method = SIP_PING;
+
+                } else if (method === SIP_PRACK && c === 'U') {
                     method = SIP_PUBLISH;
 
                 } else if (method === SIP_REGISTER) {
@@ -1362,7 +1366,9 @@ function stringifyContentType(value) {
     var param;
 
     for (param in params) {
-        opts.push(param + '=' + params[param]);
+        if (params.hasOwnProperty(param)) {
+            opts.push(param + '=' + params[param]);
+        }
     }
 
     return value.type + ';' + opts.join(',');
